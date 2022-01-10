@@ -1,0 +1,20 @@
+保护模式下调用BIOS程序
+00028162643e[CPU0  ] RET_Op32: offset outside of CS limits
+00028162643e[CPU0  ] interrupt(): gate descriptor is not valid sys seg (vector=0x0d)
+00028162643e[CPU0  ] interrupt(): gate descriptor is not valid sys seg (vector=0x08)
+sys seg表达什么？
+中断程序是什么级别的代码？
+实模式下 都是系统段？
+
+
+一些BIOS中断
+https://jadeshu.blog.csdn.net/article/details/88869372?spm=1001.2101.3001.6650.12&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-12.no_search_link&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7Edefault-12.no_search_link&utm_relevant_index=19
+
+#为什么在汇编文件中定义存放显存起始处的槽位呢？为什么不把它设置成一个常量？
+如果定义为常量的的话 更新现存位置要同时修改
+C联合汇编文件中的现存常量和引导程序中的显存常量
+而专门定义一个位置 由这个位置引用显存 位置定下来就不动了
+而只需要修改将现存位置写入这个位置的语句！
+
+为什么代码里指定段号就不合格
+
