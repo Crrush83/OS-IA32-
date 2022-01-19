@@ -133,3 +133,12 @@ void putblockVRAM(char *vram, int vxsize, int pxsize,
 	}
 	return;
   }
+
+void putfont8_asc(char *vram,int xsize,int x,int y,char c,unsigned char *s){
+  extern char hankaku[4096];
+  for(;*s!=0x00;s++){
+    putfont8(vram,xsize,x,y,c,hankaku+(*s)*16);//hankaku是一个char数组 地址加1代表内存+8 *16代表一个字体形状由16行八位01串组成
+    x+=8;
+  }
+  return;
+}  

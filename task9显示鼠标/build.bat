@@ -8,7 +8,6 @@ scp os.c %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp name.h %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp osfunc.c %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp hankaku.asm %username%@%LINUXHOST%:%LINUXWORKPATH%
-scp info.c %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp linuxlink.ld %username%@%LINUXHOST%:%LINUXWORKPATH%
 ssh -tt %username%@%LINUXHOST%<linuxbuild.sh
 %将生成的sys.bin传送回来打包%

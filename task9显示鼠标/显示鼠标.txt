@@ -1,0 +1,5 @@
+init_cursor(char *带颜色鼠标变量，char 八位背景颜色){
+	字符绘制的鼠标
+}
+show cursor:putblockVRAM
+（显存地址，屏幕宽度，像素样本位置，初始位置xy,放置块大小xy,像素样本宽度）
