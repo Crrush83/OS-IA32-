@@ -11,6 +11,11 @@ scp graphic.c %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp dsctb.c %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp dsctb.h %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp dsctb.asm %username%@%LINUXHOST%:%LINUXWORKPATH%
+scp time.h %username%@%LINUXHOST%:%LINUXWORKPATH%
+scp time.c %username%@%LINUXHOST%:%LINUXWORKPATH%
+scp time.asm %username%@%LINUXHOST%:%LINUXWORKPATH%
+scp interupt.h %username%@%LINUXHOST%:%LINUXWORKPATH%
+scp interupt.asm %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp hankaku.asm %username%@%LINUXHOST%:%LINUXWORKPATH%
 scp linuxlink.ld %username%@%LINUXHOST%:%LINUXWORKPATH%
 ssh -tt %username%@%LINUXHOST%<linuxbuild.sh

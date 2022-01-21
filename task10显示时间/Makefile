@@ -38,7 +38,7 @@ bochs:writeimg
 	$(BOCHSDBG)
 qemu: writeimg
 	$(QEMU) -fda helloos.img
-x86qemu: img
+x86qemu: writeimg
 	$(QEMUx86) -fda helloos.img
 
 .PHONY:

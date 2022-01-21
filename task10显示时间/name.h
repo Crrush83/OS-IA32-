@@ -24,6 +24,8 @@ void putblockVRAM(char *vram, int vxsize, int pxsize,int pysize, int px0, int py
 void putfont8_asc(char *vram,int xsize,int x,int y,char c,unsigned char *s);
 
 
+
+
 #define BLACK 0 // 黑色
 #define PINK 1
 #define ROSE 2
@@ -40,4 +42,6 @@ void putfont8_asc(char *vram,int xsize,int x,int y,char c,unsigned char *s);
 #define CHINESEINK 13
 #define ORANGE 14
 #define MOUSE 15
+
+
 

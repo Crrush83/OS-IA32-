@@ -3,6 +3,7 @@ struct INTERUPT_GATE_DESCRIPTOR {
 	char dw_count, access_right;
 	short offset_high;
 };
+#define IDT 0x17e00
 //struct 定义在使用前 我真的服了
 //中断
 void init_idt(void);

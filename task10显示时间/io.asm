@@ -22,6 +22,7 @@ VRAM    EQU   0x0ff8      ; 图像缓冲区的起始位置
   GLOBAL write_mem8
 
 
+
   [SECTION .text]
   io_hlt:                 ; void io_hlt(void);
   HLT
@@ -89,4 +90,3 @@ write_mem8:             ; void write_mem8(int addr, int data);
    MOV     AL, [ESP+8]   ; data
    MOV     [ECX], AL
    RET
-   
