@@ -1,5 +1,4 @@
-#include "dsctb.h"
-#include "time.h"
+#include "interupt.h"
 //中断描述符结构
 //初始化中断描述符表
 void init_idt(void)
