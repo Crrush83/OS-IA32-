@@ -1,0 +1,7 @@
+define the entry point;
+assign a value to a symbol;//0x100000 那么标号也是从0x100000递增的 
+//作为数据段是 0x28 + 中断函数名
+//但是0x28段不可执行……在添加一个全局可执行段 是最简单的
+describe the placement of a named output section, and which input sections go into it.
+
+修改0x30选择子代表全局可执行代码段！然后可以正常使用现在的标号（从0x100000起 cs和ip换算后 = 标号 = 绝对位置）
