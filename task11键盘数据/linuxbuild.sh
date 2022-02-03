@@ -9,6 +9,8 @@ gcc -Wall -m32 -g -c  -I ./include -I ./libc/include os.c -o os.bin
 gcc -Wall -m32 -g -c  -I ./include -I ./libc/include  graphic.c -o graphic.bin 
 gcc -Wall -m32 -g -c  -I ./include -I ./libc/include time.c -o time.bin 
 gcc -Wall -m32 -g -c  -I ./include -I ./libc/include interupt.c -o interupt.bin 
+gcc -Wall -m32 -g -c  -I ./include -I ./libc/include fifo.c -o fifo.bin 
+gcc -Wall -m32 -g -c  -I ./include -I ./libc/include keyboardmouse.c -o keyboardmouse.bin 
 
-ld -m elf_i386 --oformat binary asmio.bin os.bin graphic.bin hankaku.bin asmtime.bin time.bin asminterupt.bin  interupt.bin stdio.bin -o sys.bin -T linuxlink.ld 
+ld -m elf_i386 --oformat binary asmio.bin os.bin graphic.bin hankaku.bin asmtime.bin time.bin asminterupt.bin  interupt.bin fifo.bin keyboardmouse.bin stdio.bin -o sys.bin -T linuxlink.ld 
 exit

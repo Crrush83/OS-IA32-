@@ -1,0 +1,25 @@
+之前的访存
+显示：给出BOOTINFO地址 binfo->vram 读出显存位置 向显存里写数据
+设置中断表：idt地址是全局变量 根据这个全局变量确定偏移值 写内容
+修改键盘信息：BINFO是全局变量
+传入KEYINFO的地址（运行时确定）（是标号==绝对地址吗?）
+会修改KEYINFO的成员
+KEYINFO在代码中间声明 是全局数据段把？
+KEYINFO在主程序前声明：
+fetch_raw_descriptor: GDT: in
+dex (14cf) 299 > limit (37)
+
+我的ld 里面包含data段 text段 bss段呢？
+添加bss段依然？？
+02677514265e[CPU0  ] fetch_raw_descriptor: GDT: in
+dex (14cf) 299 > limit (37)
+bss段通过哪个寄存器访问？
+bss段因为未初始化 所以不算进程序的大小 只记录大小
+运行的时候加载到bss段 我猜？
+之前未初始化的clockback也解决了！
+
+查看符号表
+每个符号的地址 段地址 偏移
+已初始化的全局变量在data部分
+未初始化的全局变量在COM部分
+

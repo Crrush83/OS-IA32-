@@ -1,5 +1,5 @@
 #include "time.h"
-#include "name.h"
+#include "io.h"
 #include "interupt.h"
 void showtime(void){
 	extern struct BOOTINFO *binfo;

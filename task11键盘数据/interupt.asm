@@ -1,11 +1,11 @@
 [BITS 32]
 GLOBAL init8259A,int0x70,int0x21,int0x74
-GLOBAL load_idtr,exception
-
+GLOBAL load_idtr,exception,dealerrorcode
 EXTERN showtime,readtime,exceptionprint,showmouse
 EXTERN savekbdata
 
 [SECTION .TEXT]
+
 load_idtr:
     MOV AX,[ESP+4]		; limit 只需要16位
     MOV		[ESP+6],AX
@@ -18,7 +18,7 @@ init8259A:
          out 0xa1,al                        ;写回此寄存器
         ;暂时禁掉主片所有中断
         ;主片掩码端口是0x0021
-         mov al,0xfd ;11111101 键盘
+         mov al,0xf9 ;11111001 键盘 不允许主片的2号中断会怎样啊？我看时钟很正常啊
          out 0x21,al
          
          mov al,0x11
@@ -48,40 +48,36 @@ init8259A:
       push eax
 ;ss不会在中断里改变吧？
       call readtime
-      int3
       call showtime
       ;手动结束中断
-      ;同时给主片和丛片汇报EOI
+      ;同时给主片和丛片汇报EOI 设备码？
       mov al,0x20
-      out 0x20,al
       out 0xa0,al
+      ;mov al,0x20
+      out 0x20,al
+
       pop eax
       popad
-
       IRETD ;原来的cs和ip保存下来了吗？
- int0x74:
-    ;鼠标中断
-     pushad
-      mov eax,esp
-      push eax
-;ss不会在中断里改变吧？
-       ;int3
+ int0x74: ;鼠标中断
+      pushad
       call showmouse
       ;手动结束中断
       ;同时给主片和丛片汇报EOI
-      mov al,0x20
-      out 0x20,al
+      mov al,0x20 ;先告诉从片已经完成
       out 0xa0,al
-      pop eax
+      mov al,0x20 ;再告诉主片已经完成
+      out 0x20,al
       popad
-
       IRETD ;原来的cs和ip保存下来了吗？
   int0x21:
     ;键盘中断
-      pushad
-      call savekbdata   
-      popad
-      IRETD ;原来的cs和ip保存下来了吗？     
+    ;32MB可执行段和128KB系统代码段都是00特权级 不需要更换栈
+    ;pushad :EAX,ECX,EDX,EBX,ESP,EBP,ESI和EDI.
+    pushad
+    call savekbdata 
+    popad
+    IRETD ;原来的cs和ip保存下来了吗？     
     
       
  exception:
@@ -92,3 +88,7 @@ init8259A:
       out 0x20,al
       out 0xa0,al
     IRETD
+
+dealerrorcode:
+      pop eax
+      IRETD    

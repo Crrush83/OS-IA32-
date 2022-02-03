@@ -15,6 +15,8 @@ void int0x74(void);
 void int0x21(void);
 void exception(void);
 void exceptionprint(void);
-void showmouse(void);
-void savekbdata(void);
+void dealerrorcode(void);
+
+void init_gdt(void);
+void load_gdtr(void);
 

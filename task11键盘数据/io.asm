@@ -19,7 +19,7 @@ VRAM    EQU   0x0ff8      ; 图像缓冲区的起始位置
   GLOBAL io_in8, io_in16, io_in32
   GLOBAL io_out8, io_out16, io_out32
   GLOBAL io_load_eflags, io_store_eflags
-  GLOBAL write_mem8
+  GLOBAL write_mem8,write_mem32
 
 
 
@@ -56,7 +56,8 @@ io_in32:                ; int io_in32(int port);
   IN      EAX, DX
   RET
 
-io_out8:                ; void io_out8(int port, int data);
+io_out8:                ; void io_out8(int port, int data);;在函数内esp为空esp+4为最后一个压入参数的首字节
+;（即为传进去的第一个参数）
   MOV     EDX, [ESP+4]  ; port
   MOV     AL, [ESP+8]   ; data
   OUT     DX, AL
@@ -89,4 +90,9 @@ write_mem8:             ; void write_mem8(int addr, int data);
   MOV     ECX, [ESP+4]  ; addr
    MOV     AL, [ESP+8]   ; data
    MOV     [ECX], AL
+   RET
+write_mem32:
+   MOV     ECX, [ESP+4]  ; addr
+   MOV     eax, [ESP+8]   ; data
+   MOV     [ECX], eax
    RET

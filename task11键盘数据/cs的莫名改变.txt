@@ -1,0 +1,23 @@
+The error code is pushed on the stack as a doubleword or word (depending on the default interrupt, trap, or task gate size). To keep the stack aligned for doubleword pushes, the upper half of
+the error code is reserved. Note that the error code is not popped when the IRET instruction is
+executed to return from an exception handler, so the handler must remove the error code before
+executing a return
+
+poperrorcode以后
+write_virtual_checks(): write beyond limit, r/w
+cs:0x0030
+
+去掉POPERRPRCODE
+
+
+check_cs(0x16f4): not a valid code segment !   
+
+#注意退出bochs再同步 不然因为无法删除旧文件无法同步
+
+？换到qemu立刻可以读写缓冲区了怎么回事 我有点想吐了
+
+#也许这是一个没有问题的问题？
+
+#卧槽 再次尝试 问题消失了？我把它put进去再读出来 就消失了
+
+也许问题就在这个error code吧

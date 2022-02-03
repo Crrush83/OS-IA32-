@@ -124,15 +124,16 @@ loadgdt:
          ;想弄一个保护模式下的sys         
 
          ;创建#3描述符，保护模式下的堆栈段描述符
-		 ;0000-0x7a00
-         mov dword [bx+0x18],0x00007a00
+		 ;0x7a00-0x7c00
+         mov dword [bx+0x18],0x00000000
+         ;mov dword [bx+0x18],0x00007a00
          mov dword [bx+0x1c],0x00409600
          
          ;加载c程序开始的位置 分配大小为128KB的空间作为code段
 		 ;低
 		 ;高 段选择子是4号
-         mov dword [bx+0x20],0x0000ffff
-         mov dword [bx+0x24],0x00419810 ;9810改为9d10
+         mov dword [bx+0x20],0x0000ffff 
+         mov dword [bx+0x24],0x00419810 ;9810改为9d10 ;这里G是0呀 为什么bochs里显示是1 base也不是0呀
 		 
 		 ;再加一个全局(32M)(4GB)可用内存 可读写 x系统段or代码段
 		 mov dword [bx+0x28],0x00001fff ;28+4 = 2c 十六进制计算出错了哈
@@ -141,13 +142,14 @@ loadgdt:
          ;创建#6描述符，
          ;32MB可执行段
          mov dword [bx+0x30],0x00001fff ;2^13 = 10 0000 0000 0000 -1 = 0x1fff 2^14 = 100 0000 0000 0000 -1 = 3fff   
-         mov dword [bx+0x34],0x00c09900 ;只执行的代码段啊 不是系统段
-         
+         mov dword [bx+0x34],0x00c09a00 
+         ;只执行的代码段啊 不是系统段 ;中断程序是这样 那么中断程序结束是会由谁恢复原来的CS呢？iretd
+         ;哪里的中断是0x30?
          ;#7 0x10000开始长达128KB的可读数据段
          ;#7 0x10000开始长达128KB的可读数据段
 
          ;初始化描述符表寄存器GDTR
-         mov word [cs:gdt_size+0x7c00],55  ;描述符表的界限（总字节数减一）   
+         mov word [cs:gdt_size+0x7c00],0xffff  ;描述符表的界限（总字节数减一）   
                                              
          lgdt [cs: gdt_size+0x7c00]
       
@@ -182,6 +184,7 @@ loadgdt:
          
          mov cx,0000000000101000B ;就这里不对 怎么回事？
          mov ds,cx
+         mov es,cx ;同时也改变es 什么时候会使用es呢？
          mov esi,0x10000
          mov edi,0x100000
          mov ecx,0x8000
@@ -192,7 +195,13 @@ loadgdt:
          add edi,4
          loop move
          
-         jmp dword 0x0020:0x00000000 ;描述符5 4号000，10 0，000
+         ;栈段设置了吗？
+         mov ax,0x18
+         mov ss,ax
+         mov esp,0x7c00
+         
+         ;jmp dword 0x0020:0x00000000 ;描述符5 4号000，10 0，000
+         jmp dword 0x0030:0x10000 ;描述符5 4号000，10 0，000
       
   ghalt:     
          hlt                                ;已经禁止中断，将不会被唤醒 
