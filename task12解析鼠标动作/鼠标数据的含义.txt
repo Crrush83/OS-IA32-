@@ -1,0 +1,29 @@
+只有第一个字节有数据？
+接不满三个数据 只有phase == 3的时候返回 显示 不显示
+现在phase == 2也回返回
+
+phase == 1就返回，若打印，说明 接受过0xfa 并再次接受内容 
+
+第一数据 -6 怎么回事？
+data 应该是 unsigned char 一个字节的二进制罢了
+11111010 （250）
+-6的补码：符号位为1 原码000 0110 取反 111 1001 加一 111 1010
+本来是无符号 理解成有符号了
+
+依然有时候无法正确接收三字节
+
+有符号char -6和0xfa比较
+如果都是八位 相等
+无符号char 250和0xfa比较 如果都是8位 相等
+
+有符号-6 拓宽成32位表示 111.....11 1010和0xfa拓宽成32位不一样！
+
+ unsigned char mousedata = (unsigned char)fifo8_get(mousefifo);//存的时候可以当成int理解 但是取的时候应该是unsigned
+         char chardata = mousedata;
+         unsigned char p = "    ";
+         sprintf(p,"%02X",chardata);
+         putfont8_asc(binfo->vram, binfo->scrnx, 8, 80, MINT, (unsigned char *)p);
+
+打印结果是高位补1的32位数
+
+在C语言中并没有char类型的常量（但是在C++中却有，字符常量都是char类型），其实是用int表示char，字符型与整型相比只是更加节省内存。  

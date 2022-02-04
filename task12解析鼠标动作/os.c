@@ -32,13 +32,14 @@ int main(void) {
   fifo8_init(keyfifo,32,keybuf);
   fifo8_init(mousefifo,32,mousebuf);
   struct MOUSE_DEC mdec;
+  init_mouse_decode(&mdec);
+  int mousex = 151,mousey = 91;
   int i;
   for(i = 0;i < 1024;i++){
         clockbg[i] = MOON;
   }
   
-  int mx = (binfo->scrnx - 16) / 2;
-  int my = (binfo->scrny - 28 - 16) / 2;
+
 
 	init_palette();
 	init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
@@ -46,7 +47,7 @@ int main(void) {
  // putfont8_asc(binfo->vram, binfo->scrnx, 8, 8, ROSE, (unsigned char*)"show string API");
 	//show a cursor!
 	init_mouse_cursor8(mcursor,BABYBLUE);
-	putblockVRAM(binfo->vram,binfo->scrnx,16,16,mx,my,mcursor,16);
+	putblockVRAM(binfo->vram,binfo->scrnx,16,16,mousex,mousey,mcursor,16);
   //clock background
   //set idt
   io_cli();
@@ -64,22 +65,29 @@ int main(void) {
   io_sti();
   //int debug_position = 1;
   //int kb;
+  int debug = 1;
  		for (;;) {
+       io_cli();
        if(fifo8_status(keyfifo) + fifo8_status(mousefifo) > 0){
          if(fifo8_status(mousefifo) > 0){
-         char *tmp = "    ";
-         sprintf(tmp,"%d",fifo8_get(mousefifo));
-         box_fill8(binfo->vram,binfo->scrnx,BABYBLUE,8,16,23,31);
-	       putfont8_asc(binfo->vram, binfo->scrnx, 8,16, ROSE,(unsigned char*)tmp);	
-         }
+        //get data then clean int 不论使用什么样的类型标识 只是影响打印的值 存储的二进制不会变化
+        unsigned char mousedata = fifo8_get(mousefifo);
+         io_sti();
+         if(mouse_decode(&mdec,mousedata)!=0){
+        //鼠标全局变量 mousex mousey
+        //计算新坐标 隐去旧鼠标 描画新鼠标
+          box_fill8(binfo->vram, binfo->scrnx, BABYBLUE, mousex, mousey, mousex+15, mousey+15);
+          move_mouse(binfo,&mdec,&mousex,&mousey);//修改鼠标背景 修改鼠标坐标
+        	putblockVRAM(binfo->vram,binfo->scrnx,16,16,mousex,mousey,mcursor,16);
+          }
+        }
          else{
          char *tmp = "    ";
          sprintf(tmp,"%d",fifo8_get(keyfifo));
-         box_fill8(binfo->vram,binfo->scrnx,BABYBLUE,8,32,23,63);
-	       putfont8_asc(binfo->vram, binfo->scrnx, 8,32, ROSE,(unsigned char*)tmp);	
-         //io_hlt();
+         io_sti();
          }
        }else{
+        io_sti();
         io_hlt();
        }
 }

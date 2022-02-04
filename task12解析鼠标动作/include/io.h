@@ -1,3 +1,5 @@
+#ifndef _IO_H
+#define _IO_H
 struct BOOTINFO{
     char cyls, leds, vmode, reserve;
 	short scrnx, scrny;
@@ -46,4 +48,4 @@ void putfont8_asc(char *vram,int xsize,int x,int y,char c,unsigned char *s);
 #define MOUSE 15
 
 
-
+#endif
