@@ -24,10 +24,14 @@ int main(void) {
   
  // extern char hankaku[4096];
   
-  //extern struct FIFIO8 keyinfo;//data段
+  //extern struct FIFIO8 keyfifo;//data段
   unsigned char keybuf[32];
-  extern struct FIFO8 *keyinfo;
-  fifo8_init(keyinfo,32,keybuf);
+  unsigned char mousebuf[32];
+  extern struct FIFO8 *keyfifo;  
+  extern struct FIFO8 *mousefifo;  
+  fifo8_init(keyfifo,32,keybuf);
+  fifo8_init(mousefifo,32,mousebuf);
+  struct MOUSE_DEC mdec;
   int i;
   for(i = 0;i < 1024;i++){
         clockbg[i] = MOON;
@@ -54,20 +58,27 @@ int main(void) {
   set_intgatedesc(idt+0x21,(int)int0x21,0x30,0x8e00); 
   initRTC();
   init8259A();
-  //init_keyboard();
- // enable_mouse();
+  init_keyboard();// 键盘OK 
+  enable_mouse();//单独enable mouse mouse是可以了键盘却关了
 //既然是跳过去执行 应该有执行权限
   io_sti();
-  int debug_position = 1;
+  //int debug_position = 1;
+  //int kb;
  		for (;;) {
-       if(fifo8_status(keyinfo) > 0){
-         char *tmp = "  ";
-         
-         sprintf(tmp,"%d",fifo8_status(keyinfo));
-         fifo8_get(keyinfo);
-	       putfont8_asc(binfo->vram, binfo->scrnx, 8,16*debug_position, ROSE,(unsigned char*)tmp);	
-	       debug_position++;
-         io_hlt();
+       if(fifo8_status(keyfifo) + fifo8_status(mousefifo) > 0){
+         if(fifo8_status(mousefifo) > 0){
+         char *tmp = "    ";
+         sprintf(tmp,"%d",fifo8_get(mousefifo));
+         box_fill8(binfo->vram,binfo->scrnx,BABYBLUE,8,16,23,31);
+	       putfont8_asc(binfo->vram, binfo->scrnx, 8,16, ROSE,(unsigned char*)tmp);	
+         }
+         else{
+         char *tmp = "    ";
+         sprintf(tmp,"%d",fifo8_get(keyfifo));
+         box_fill8(binfo->vram,binfo->scrnx,BABYBLUE,8,32,23,63);
+	       putfont8_asc(binfo->vram, binfo->scrnx, 8,32, ROSE,(unsigned char*)tmp);	
+         //io_hlt();
+         }
        }else{
         io_hlt();
        }

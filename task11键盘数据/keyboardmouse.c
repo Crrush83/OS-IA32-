@@ -2,8 +2,10 @@
 #include "fifo.h"
 #include "io.h"
 #include <stdio.h>
-struct FIFO8 keyinfos;
-struct FIFO8 * keyinfo = &keyinfos; 
+struct FIFO8 keyfifos;
+struct FIFO8 * keyfifo = &keyfifos;
+struct FIFO8 mousefifos;
+struct FIFO8 * mousefifo = &mousefifos; 
 
 #define PORT_KEYDAT				0x0060
 #define PORT_KEYSTA				0x0064
@@ -27,7 +29,7 @@ void init_keyboard(void)
 	wait_KBC_sendready();
 	io_out8(PORT_KEYCMD, KEYCMD_WRITE_MODE);
 	wait_KBC_sendready();
-	io_out8(PORT_KEYDAT, KBC_MODE);
+	io_out8(PORT_KEYDAT, KBC_MODE); 
 	return;
 }
 
@@ -45,9 +47,13 @@ void enable_mouse(void)
 
 
 //=(struct FIFO8 *)0x0ffc;//未初始化数据在这个文件就可 其他文件就不可？
-void showmouse(void){
-	extern struct BOOTINFO *binfo;
-	putfont8_asc(binfo->vram, binfo->scrnx, 8, 24, ROSE,(unsigned char*)"mouse!");	
+int dbg = 0;
+void savemousedata(void){
+	//extern struct BOOTINFO *binfo;
+	extern struct FIFO8 * mousefifo;
+	int r = io_in8(0x60);
+	fifo8_put(mousefifo,r);
+	return;
 }
 
 /*
@@ -62,8 +68,8 @@ void savekbdata(void){
 	//getdata
 	unsigned char data;
 	data = io_in8(0x60);
-	extern struct FIFO8 * keyinfo;
-    int r = fifo8_put(keyinfo,data);
+	extern struct FIFO8 * keyfifo;
+    int r = fifo8_put(keyfifo,data);
 
 	char p[20];
 	sprintf(p,"%d",r);
@@ -71,8 +77,8 @@ void savekbdata(void){
 	putfont8_asc(binfo->vram, binfo->scrnx, 8, 180, ROSE,(unsigned char*)p);	
 	
 	//telldone
-	io_out8(0x20,0x20);//0x61
-	io_out8(0xa0,0x20); //键盘不需要通知从片吧
+	io_out8(0x20,0x61);//0x61
+	io_out8(0xa0,0x61); //键盘不需要通知从片吧
 	//原子性怎么保证哇？
 	return;
 }

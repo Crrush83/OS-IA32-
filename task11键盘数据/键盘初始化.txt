@@ -1,0 +1,34 @@
+AT keyboard controller input port bit definitions #键鼠模式 10010000
+		  bit 7	  = 0  keyboard inhibited
+		  bit 6	  = 0  CGA, else MDA
+		  bit 5	  = 0  manufacturing jumper installed
+		  bit 4	  = 0  system RAM 512K, else 640K
+		  bit 3-0      reserved
+
+		 AT keyboard controller input port bit definitions by Compaq #00001000
+		  bit 7	  = 0  security lock is locked
+		  bit 6	  = 0  Compaq dual-scan display, 1=non-Compaq display
+		  bit 5	  = 0  system board dip switch 5 is ON
+		  bit 4	  = 0  auto speed selected, 1=high speed selected
+		  bit 3	  = 0  slow (4MHz), 1 = fast (8MHz)1
+		  bit 2	  = 0  80287 installed, 1= no NDP installed
+		  bit 1-0      reserved
+
+		 AT keyboard controller output port bit definitions
+		  bit 7 =    keyboard data output
+		  bit 6 =    keyboard clock output
+		  bit 5 = 0  input buffer full
+		  bit 4 = 0  output buffer empty
+		  bit 3 =    reserved (see note)
+		  bit 2 =    reserved (see note)
+		  bit 1 =    gate A20
+		  bit 0 =    system reset
+
+enable鼠标和键盘和键盘后怎么反而都借不到了
+internal keyboard buffer full, i
+gnoring scancode
+internal keyboard buffer full, i
+gnoring scancode
+
+应该是鼠标的数据没读出来 堵住了
+而鼠标总是先发生 后面的键盘就听不到惹

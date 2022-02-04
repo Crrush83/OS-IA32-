@@ -1,8 +1,8 @@
 [BITS 32]
 GLOBAL init8259A,int0x70,int0x21,int0x74
 GLOBAL load_idtr,exception,dealerrorcode
-EXTERN showtime,readtime,exceptionprint,showmouse
-EXTERN savekbdata
+EXTERN showtime,readtime,exceptionprint
+EXTERN savekbdata,savemousedata
 
 [SECTION .TEXT]
 
@@ -44,8 +44,6 @@ init8259A:
   ;time interupt
   int0x70:
       pushad
-      mov eax,esp
-      push eax
 ;ss不会在中断里改变吧？
       call readtime
       call showtime
@@ -55,18 +53,16 @@ init8259A:
       out 0xa0,al
       ;mov al,0x20
       out 0x20,al
-
-      pop eax
       popad
       IRETD ;原来的cs和ip保存下来了吗？
  int0x74: ;鼠标中断
       pushad
-      call showmouse
+      call savemousedata
       ;手动结束中断
       ;同时给主片和丛片汇报EOI
-      mov al,0x20 ;先告诉从片已经完成
+      mov al,0x64 ;先告诉从片已经完成
       out 0xa0,al
-      mov al,0x20 ;再告诉主片已经完成
+      mov al,0x62 ;再告诉主片已经完成
       out 0x20,al
       popad
       IRETD ;原来的cs和ip保存下来了吗？
