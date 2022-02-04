@@ -88,19 +88,25 @@ read_floppy_disk_0:
          mov dword [bx+0x04],0x00  
 
          ;创建#1描述符，保护模式下的代码段描述符
+		 ;偏移0-15 16-19 第一行是低地址 段内偏移0-001ff 1后面9个0 2^9 = 512字节
          mov dword [bx+0x08],0x7c0001ff     
          mov dword [bx+0x0c],0x00409800     
 
          ;创建#2描述符，保护模式下的数据段描述符（文本模式下的显示缓冲区） 
+		 ;0xb8000 文本模式显存字符区
+		 ;段内偏移 - 0ffff =2^16Byte = 2^8 * 256
          mov dword [bx+0x10],0x8000ffff     
          mov dword [bx+0x14],0x0040920b    
          ;想弄一个保护模式下的sys         
 
          ;创建#3描述符，保护模式下的堆栈段描述符
+		 ;
          mov dword [bx+0x18],0x00007a00
          mov dword [bx+0x1c],0x00409600
          
-         ;
+         ;加载c程序开始的位置 分配大小为1M的空间作为code段
+		 ;低
+		 ;高
          mov dword [bx+0x20],0x00001fff
          mov dword [bx+0x24],0x00a09801
 

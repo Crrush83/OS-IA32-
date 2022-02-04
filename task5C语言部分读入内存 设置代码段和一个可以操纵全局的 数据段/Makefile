@@ -36,7 +36,7 @@ writeimg: sys.bin ipl
 bochs:writeimg
 	copy ..\bochsrc.bxrc 
 	$(BOCHSDBG)
-qemu: img
+qemu: writeimg
 	$(QEMU) -fda helloos.img
 x86qemu: img
 	$(QEMUx86) -fda helloos.img

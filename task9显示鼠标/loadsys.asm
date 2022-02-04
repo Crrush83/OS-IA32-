@@ -143,7 +143,6 @@ loadgdt:
          mov dword [bx+0x30],0x7c0001ff    
          mov dword [bx+0x34],0x00409000 ;只读的数据段啊
          
-         ;#7 0x10000开始长达128KB的可读数据段
 
          ;初始化描述符表寄存器GDTR
          mov word [cs:gdt_size+0x7c00],55  ;描述符表的界限（总字节数减一）   

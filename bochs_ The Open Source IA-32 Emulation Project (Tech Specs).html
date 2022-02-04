@@ -1,0 +1,178 @@
+
+<!-- saved from url=(0042)https://bochs.sourceforge.io/techdata.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>bochs: The Open Source IA-32 Emulation Project (Tech Specs)</title>
+
+<style type="text/CSS">
+<!--
+A:link {color: blue; text-decoration: none}
+A:visited {color: blue; text-decoration: none}
+A:active {color: blue; text-decoration: none}
+A:hover {color: blue; text-decoration: underline}
+INPUT {border-bottom:thin solid black;border-right:thin solid black;border-top:thin solid black;border-left:thin solid black; font-size: 7pt; font-family:Verdana, Arial Helvetica}
+
+
+.sidebar {font-family:Verdana, Arial, Helvetica; color: #000000}
+A.sidebar:link {color: #000000; font-style: normal; text-decoration: none}
+A.sidebar:visited {color: #000000; font-style: normal; text-decoration: none}
+A.sidebar:active {color: #000000; font-style: normal; text-decoration: none}
+A.sidebar:hover {color: blue; text-decoration: underline}
+-->
+</style>
+
+<meta name="resource-type" content="document">
+<meta name="distribution" content="GLOBAL">
+<meta name="description" content="Bochs IA-32 Emulator provides a virtual PC that can run operating systems such as Windows, Linux, and BSD.">
+<meta name="copyright" content="Copyright 2001-2021 The Bochs Project.">
+<meta name="keywords" content="pc emulation, vmware, win4lin, netraverse, trelos, x86 emulation, emulator,insignia, softpc, connectix, virtualpc, fx!32, freemware, plex86, dynamic translation,open source, gnu, linux, windows, bsd">
+<meta name="Author" content="Timothy R. Butler">
+
+
+</head>
+<body bgcolor="#FFFFFF" vlink="#000000" alink="#000000" link="#000000" topmargin="0" leftmargin="0" marginwidth="0" marginheight="0">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tbody><tr><td width="140" bgcolor="#aacbff">&nbsp;</td><td bgcolor="#6d95d7" width="400"><font face="arial, helvetica" size="2" color="#1e029a"><center><b>T H E&nbsp;&nbsp;&nbsp;C R O S S&nbsp;&nbsp;&nbsp;P L A T F O R M&nbsp;&nbsp;&nbsp;I A - 3 2&nbsp;&nbsp;&nbsp;E M U L A T O R</b></center></font></td><td width="100%"><table border="0" cellspacing="0" cellpadding="0" width="100%"><tbody><tr><td bgcolor="#4079d6" width="50%">&nbsp;</td><td bgcolor="#1e029a" width="50%">&nbsp;</td></tr></tbody></table></td></tr>
+<tr><td width="140" bgcolor="#6d95d7"><font face="arial, helvetica"></font><center><font face="arial, helvetica"><b>Current Release:</b><br><a href="https://bochs.sourceforge.io/getcurrent.html" class="sidebar"><i><u>Bochs 2.7</u></i></a></font></center></td><td width="400" height="130"><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/lgban.png" width="400" height="130" alt="bochs: think inside the bochs."></td><td>&nbsp;</td></tr>
+<tr><td colspan="3" bgcolor="#4079d6" height="1">
+<img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/smblue.png" width="1" height="1"></td></tr>
+<tr><td bgcolor="#4079d6" width="140" valign="top">
+<font face="arial, helvetica" size="-1">
+<img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/smblue.png" width="140" height="1">
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/" class="sidebar">Home Page</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/projects/bochs" class="sidebar">SF Project Page</a>
+
+<br><br><center><b>Search</b></center>
+<center><form method="GET" action="https://bochs.sourceforge.io/cgi-bin/eglimpse.pl/search">
+<input type="hidden" name="title" value="Bochs">
+<input type="hidden" name="file_base" value="/home/groups/b/bo/bochs/htdocs">
+<input type="hidden" name="url_base" value="https://bochs.sourceforge.io">
+<input type="hidden" name="output_format" value="standard">
+<input type="hidden" name="case_sensitive" value="no">
+<input type="hidden" name="words_only" value="yes">
+<input type="hidden" name="misspellings" value="0">
+<input type="hidden" name="file_pattern" value="">
+<input type="hidden" name="date_filter" value="">
+<input name="query" size="18">
+</form></center>
+
+<br><center><b>Get Bochs</b></center>
+
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/getcurrent.html" class="sidebar">Download Current</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/projects/bochs/files/bochs" class="sidebar">See All Releases</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/diskimages.html" class="sidebar">Disk Images</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/forge/documentation/svn/" class="sidebar">Anonymous SVN</a>
+
+
+<br><br><center><b>Support</b></center>
+
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/bochs/wiki/Home" class="sidebar">Bochs Wiki</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/cgi-bin/topper.pl?name=Bochs+FAQ&amp;url=https://bochs.sourceforge.io/doc/docbook/user/faq.html" class="sidebar">Bochs FAQ</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/cgi-bin/topper.pl?name=New+Bochs+Documentation&amp;url=https://bochs.sourceforge.io/doc/docbook/" class="sidebar">Documentation</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/cgi-bin/topper.pl?name=New+Bochs+Documentation&amp;url=https://bochs.sourceforge.io/doc/docbook/user/index.html" class="sidebar">User Guide</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/cgi-bin/topper.pl?name=New+Bochs+Documentation&amp;url=https://bochs.sourceforge.io/doc/docbook/development/index.html" class="sidebar">Devel. Guide</a>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/cgi-bin/topper.pl?name=New+Bochs+Documentation&amp;url=https://bochs.sourceforge.io/doc/docbook/documentation/index.html" class="sidebar">Doc. Guide</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/mailinglists.html" class="sidebar">Mailing Lists</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.io/p/bochs/discussion/" class="sidebar">Discussion Boards</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/forge/documentation/Docs%20Home" class="sidebar">SF Site Docs</a>
+
+<br><br><center><b>Feedback</b></center>
+
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/bochs/bugs/" class="sidebar">Bug Reports</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/bochs/feature-requests/" class="sidebar">Feature Requests</a>
+
+
+<br><br><center><b>Development</b></center>
+
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/getinvolved.html" class="sidebar">Get Involved</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/bochs/code/HEAD/tree/" class="sidebar">View the Source</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://sourceforge.net/p/bochs/patches/" class="sidebar">Patches</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/techdata.html" class="sidebar">Tech Specs Pages</a>
+
+<br><br><center><b>Resources</b></center>
+
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/news.html" class="sidebar">Bochs History</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/links.html" class="sidebar">Bochs Links</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/related.html" class="sidebar">Related Links</a>
+<br>&nbsp;&nbsp;<b>-</b>&nbsp;<a href="https://bochs.sourceforge.io/screenshots.html" class="sidebar">Screen Shots</a>
+
+</font>
+</td><td colspan="2" valign="top">
+<table width="100%" border="0"><tbody><tr><td>
+
+
+ <img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/logo.png" alt="A Window, Tux, and the BSD Daemon" width="160" height="175" align="right">
+ <br><font face="arial, helvetica" color="#1e029a" size="4"><b>Technical Documents Related to Bochs</b></font><br>
+
+ &nbsp;&nbsp;&nbsp;&nbsp;Because Bochs emulates much of the standard PC hardware, developers must have access to good
+ documentation for the hardware that they wish to emulate. To fill this need, here is a collection
+ of technical specs that are relevant to PC emulation. All documents are collected from public web
+ sites, so links to the original source are provided when possible. In some cases, a copy has been
+ placed on the Bochs web site in addition to the link to the original source. This was done to
+ avoid the common problem of documents moving or disappearing from the web. If you know of any
+ copyright problems with our mirroring of this information, please let us know and we will
+ replace the document with a link or remove it. If you have technical specs that might be useful
+ to Bochs developers, please email <a href="mailto:tbutler@uninetsolutions.com">Tim Butler</a>.
+
+
+<ul>
+<b>Local Resources</b><br><br>
+<li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="https://bochs.sourceforge.io/techspec/8042.TXT">8042.TXT</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="https://bochs.sourceforge.io/techspec/CMOS-reference.txt">CMOS-reference.txt</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="https://bochs.sourceforge.io/techspec/DMA_RTI.TXT">DMA_RTI.TXT</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="https://bochs.sourceforge.io/techspec/IDE-reference.txt">IDE-reference.txt</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="https://bochs.sourceforge.io/techspec/PORTS.LST">XT, AT, and
+PS/2 I/O port addresses</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-82093-apic.pdf.gz">Intel 82093AA I/O APIC Datasheet</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-8259a-pic.pdf.gz">Intel 8259A PIC Datasheet</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-82c54-timer.pdf.gz">Intel 82C54 Programmable Interval Timer Datasheet</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-ia32-sdg1.pdf.gz">IA-32 Intel Architecture Software Developer's Manual 1: Basic Architecture</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-ia32-sdg2.pdf.gz">IA-32 Intel Architecture Software
+Developer's Manual 2: Instruction Set Reference</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-ia32-sdg3.pdf.gz">IA-32 Intel Architecture Software
+Developer's Manual 3: System Programming Guide</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/intel-mp-spec.pdf.gz">Intel Multiprocessor Specification</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/el-torito.pdf.gz">Spec for El Torito, which describes how to boot the PC from a CDROM.</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/compressed.gif" alt="[TAR.GZ]"> <a href="https://bochs.sourceforge.io/techspec/DP8390D.pdf.gz">Datasheet for DP8390/NS32490D Network Interface Controller, used in the NE2000</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="https://bochs.sourceforge.io/techspec/adlib_sb.txt">Programming the AdLib/Sound Blaster FM Music Chips (Ver 2.0) by Jeffrey S. Lee</a>
+
+
+
+<br><br><b>Remote Resources</b><br><br>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://ata-atapi.com/">ATA-Atapi Information by Hale Landis</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://www.t13.org/">Technical Committee T13</a> of the National Committee on Information Technology Standards (NCITS) is responsible for the interface standards for ATA/ATAPI.  Several version of the ATA/ATAPI specs are on their site under Documents.
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://www.cs.cmu.edu/~ralf/files.html">Ralf Brown's famous interrupt list</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://www.cs.cmu.edu/~ralf/undoc.html">Ralf Brown's undocumented stuff</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://kos.enix.org/docs.php">ENIX hardware documentation (descriptions are in French, but docs are in English)</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://x86.ddj.com/">Dr.  Dobb's Microprocessor Resources</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://rpm.org/">RPM reference and new versions</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://www.ecma.ch/">ECMA is an standards organization for info and communication systems</a>
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://www.parashift.com/c++-faq-lite/index.html">C++ FAQ Lite by Marshall Cline</a>, a very good C++ Frequently Asked Questions list
+</li><li><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> <a href="http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf">BIOS Boot Specification
+</a></li><li><a href="http://www.scs.stanford.edu/nyu/04fa/lab/specsbbs101.pdf"><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/text.gif" alt="[TXT]"> </a><a href="http://www.osdever.net/documents/PNPBIOSSpecification-v1.0a.pdf">PNPBIOS Specification v1.0a
+</a></li></ul><a href="http://www.osdever.net/documents/PNPBIOSSpecification-v1.0a.pdf">
+
+</a></td></tr></tbody></table>
+</td></tr>
+<tr><td colspan="3" bgcolor="#4079d6" height="1"><img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/sm.png" width="1" height="1"></td></tr>
+<tr><td width="140" bgcolor="#aacbff">&nbsp;</td><td bgcolor="#6d95d7" width="400">&nbsp;</td><td width="100%"><table border="0" cellspacing="0" cellpadding="0" width="100%"><tbody><tr><td bgcolor="#4079d6" width="50%">&nbsp;</td><td bgcolor="#1e029a" width="50%">&nbsp;</td></tr></tbody></table></td></tr>
+<tr><td>
+<center>
+<a href="https://sourceforge.net/">
+<img src="./bochs_ The Open Source IA-32 Emulation Project (Tech Specs)_files/sflogo.php" width="88" height="31" border="0" alt="SourceForge Logo">
+</a>
+</center>
+</td>
+<td colspan="2"><font size="2" face="arial, helvetica">Please send comments and questions concerning the site to <a href="mailto:vruppert@users.sourceforge.net">Volker Ruppert</a>.<br>
+Web site feature requests and bug reports should be added to the <a href="https://sourceforge.net/p/bochs/web-site-requests/">Web site tracker</a>.<br>
+
+
+
+Last Modified on Sunday, 21-Mar-2021 21:40:24 UTC.<br>
+
+© 2001-2021 The Bochs Project. See the project <a href="https://sourceforge.net/projects/bochs/files/stats/timeline">statistics</a> here.</font></td></tr>
+</tbody></table>
+
+
+
+
+</body></html>

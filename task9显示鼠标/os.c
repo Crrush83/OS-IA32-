@@ -16,6 +16,9 @@ int main(void) {
 	//show a cursor!
 	init_mouse_cursor8(mcursor,BABYBLUE);
 	putblockVRAM(binfo->vram,binfo->scrnx,16,16,mx,my,mcursor,16);
+
+
+
  	 for (;;) {
     io_hlt();
   }

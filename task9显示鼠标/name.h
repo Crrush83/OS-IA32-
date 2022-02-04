@@ -16,6 +16,7 @@ void init_mouse_cursor8(char *mouse,char bc);//拓印一个鼠标 并且背景�
 void putblockVRAM(char *vram, int vxsize, int pxsize,int pysize, int px0, int py0, char *buf, int bxsize);//bxsize 显示宽度 pxsize 缓存宽度
 void putfont8_asc(char *vram,int xsize,int x,int y,char c,unsigned char *s);
 
+
 #define BLACK 0 // 黑色
 #define PINK 1
 #define ROSE 2
@@ -40,3 +41,5 @@ struct BOOTINFO{
 	short scrnx, scrny;
 	char *vram;
 };
+
+

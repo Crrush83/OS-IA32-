@@ -1,0 +1,3 @@
+默认是bx-generic
+参数见
+https://bochs.sourceforge.io/doc/docbook/user/bochsrc.html#BOCHSOPT-CPUID
