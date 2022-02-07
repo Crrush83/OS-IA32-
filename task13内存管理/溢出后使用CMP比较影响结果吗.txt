@@ -1,0 +1,41 @@
+      CF：是否有进位或者借位
+
+      ZF：0标志位，就是结果是否为0
+
+      OF：溢出标志位，是否计算机结果溢出了
+
+      SF：符号位，0为正，1为负
+
+ 
+
+      AF：辅助进位标志位，我也不知道干嘛的
+
+      PF：奇偶标志位，这个好判断呀，看最后一位是0是1就行了
+
+ 
+
+      CMP指令的格式为 CMP op1 op2 用到的标志位有CF,ZF,OF,SF四个，对于两个无符号数的情况，两数相减不可能溢出了，看CF和ZF标志位就可以，如果ZF为1，说明结果是0，那不用说，两数相等了（有符号数也是这样），如果ZF为0，则如果CF为1，表示有借位，op1<op2，否则op1>op2。
+	0xfffff000 + 0x1000 = 0x100000000 溢出
+	但CMP 0000 0000 , ffff ffff 有借位 会判断小于 结果不为0
+	说明在溢出的时候就退出？
+
+
+Description
+Compares the first source operand with the second source operand and sets the status flags in
+the EFLAGS register according to the results. The comparison is performed by subtracting the
+second operand from the first operand and then setting the status flags in the same manner as the
+SUB instruction. When an immediate value is used as an operand, it is sign-extended to the
+length of the first operand.
+The CMP instruction is typically used in conjunction with a conditional jump (Jcc), condition
+move (CMOVcc), or SETcc instruction. The condition codes used by the Jcc, CMOVcc, and
+SETcc instructions are based on the results of a CMP instruction. Appendix B, EFLAGS Condition Codes, in the IA-32 Intel Architecture Software Developer’s Manual, Volume 1, shows the
+relationship of the status flags and the condition codes
+
+The terms “above” and “below” are associated with the CF flag and refer to the relation between
+two unsigned integer values. The terms “greater” and “less” are associated with the SF and OF
+flags and refer to the relation between two signed integer values.
+
+JAE rel8 Jump short if above or equal (CF=0)【无符号数】 有借位代表小于没借位代表大于的话 那么溢出的怎么解决？
+
+fe00 0000~ffff ffff 是32MB 返回i的时候
+程序输出4064MB 说明没进入循环嘛

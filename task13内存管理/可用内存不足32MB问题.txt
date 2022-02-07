@@ -1,0 +1,12 @@
+全局数据段
+es:0x0028, dh=0x00c09300, dl=0x00001fff,
+ valid=1
+        Data segment, base=0x00000000, l
+imit=0x01ffffff, Read/Write, Accessed  
+#高字的第23位 ：1 代表4KB 2^25 = 32MB
+奥 已经被换算过啦
+limit就是按字节寻址的最高
+修改为4GB
+那么0x120000 - 0xffffffff = 
+
+4GB/4KB = 1M = 偏移最高fffff G = 1

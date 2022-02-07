@@ -1,0 +1,35 @@
+unsigned int memtest_sub(unsigned int start, unsigned int end)
+{
+	unsigned int i, *p, old, pat0 = 0xaa55aa55, pat1 = 0x55aa55aa;
+	for (i = start; i <= end; i += 0x1000) {
+		p = (unsigned int *) (i + 0xffc);
+		old = *p;			//旧内容
+		*p = pat0;			//写入新内容
+		*p ^= 0xffffffff;	//做计算 为何不直接比较？
+		if (*p != pat1) {	
+not_memory:
+			*p = old;
+			break;
+		}
+		*p ^= 0xffffffff;	
+		if (*p != pat0) {	
+			goto not_memory;
+		}
+		*p = old;			
+	}
+	return i;
+}
+以0x1000为单位 2^12 = 4kb为单位
+起始		终点		测试结果（byte）	实际可用
+fd00 0000	ffff ffff	0100 0000		0200 0000
+0012 0000	0013 0007	0001 1000		0001 0007
+0012 0000	ffff ffff	07ee 0000		ffed ffff
+f000 0000	ffff ffff	0000 0000		0fff ffff
+注意别越界 end + 0x1000 <= 0xffff ffff end <= 0xffff efff
+起始		终点		测试结果（byte）	实际可用
+fd00 0000	ffff ffff	0100 0000		0300 0000
+0012 0000	ffff ffff	0004 000		0004 0000 正确
+0012 0000	ffff ffff	07ee 0000		ffed ffff
+0015 0000	abe1 ffff	07eb 0000		abcd 0000	i截止到800 0000 到底是什么啊不能写？
+好奇怪啊 哪里的问题呢？直接用汇编写掉好啦
+用汇编就好 还要改一下 返回i - start
