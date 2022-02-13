@@ -1,0 +1,17 @@
+三个计时器后 timerman：
+0x00000003      0x00149108
+    t->count = (unsigned int)0;//这句没成功呀 不完整类型？？
+    t->list = list_init();[0x14910c]
+
+ struct list_node *list = new_node(); 0x00149110 
+		struct list_node* new_node(){
+    extern struct MEMMAN *memman;
+    return (struct list_node*)memman_alloc(memman,8);//
+} 
+struct list_node* new_node(){
+    extern struct MEMMAN *memman;
+    return (struct list_node*)memman_alloc(memman,8);//
+}0x149118
+110和118互相zhixiang
+dumphead:0x00149110      
+dumptail:0x00149118   

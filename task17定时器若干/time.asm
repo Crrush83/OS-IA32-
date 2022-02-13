@@ -1,6 +1,6 @@
   [BITS 32]
   GLOBAL initRTC,readtime
-  EXTERN showtime
+  EXTERN showtime,updatetimer
   [SECTION .text] 
 initRTC:
         ;设置8259A中断控制器       
@@ -10,7 +10,7 @@ initRTC:
         or al,0x80                        
         out 0x70,al
         in al,0x71
-        or al,00101011_b ;1.25ms  1秒就是800下 怎么跟500ms一更新一样？                   
+        or al,0x0c ;1.25ms  1秒就是800下 怎么跟500ms一更新一样？                   
         out 0x71,al 
         ;允许周期性
          mov al,0x0b      ;寄存器选择                  ;RTC寄存器B
@@ -36,7 +36,7 @@ readtime:
       out 0x70,al
       in al,0x71 ;读过寄存器C后导致C清零
       test al,0x10 ;周期清零操作否？
-      JZ fanhui
+      JZ reflashtimer
       .w0:                                    
       mov al,0x0a                        ;阻断NMI。当然，通常是不必要的
       or al,0x80                          
@@ -90,10 +90,8 @@ readtime:
       mov byte [0x1004],0x00 ;现实的时候 先低地址再高地址 从左向右 反而是低位在前咯
       call showtime
       ret
-      fanhui:
-      mov eax,[0x1010]
-      inc eax
-      mov [0x1010],eax
+      reflashtimer:
+      call updatetimer
       ret
 
 bcd_to_ascii:                            ;BCD码转ASCII

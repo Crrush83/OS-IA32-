@@ -3,8 +3,10 @@
 #include "graphic.h"
 #include <stdio.h>
 //*layer man*//
-struct LAYERMAN* layerman_init(struct MEMMAN *memman,struct BOOTINFO *binfo){
-	struct LAYERMAN *layerman = (struct LAYERMAN *)memman_alloc_4k(memman,sizeof(struct LAYERMAN)); 
+struct LAYERMAN* layerman_init(){
+	//extern struct MEMMAN *memman;
+	extern struct BOOTINFO *binfo;
+	struct LAYERMAN *layerman = (struct LAYERMAN *)memman_alloc_4k(sizeof(struct LAYERMAN)); 
 	//addr 0 代表错误 因为最低可用是12000
 	if(layerman == 0){
 		goto err;
@@ -270,9 +272,8 @@ void layer_free(struct LAYERMAN *layman, struct LAYER *layer)
 struct LAYER* layer_screen(int x, int y)
 {
 	extern struct LAYERMAN *layman;
-	extern struct MEMMAN * memman;
 	//mem space 
-	unsigned char * bgbuf = (unsigned char * )memman_alloc_4k(memman,x * y);
+	unsigned char * bgbuf = (unsigned char * )memman_alloc_4k(x * y);
 	init_screen(bgbuf,x,y);
 	struct LAYER * layerbg;
 	layerbg = layer_register(layman);
@@ -284,8 +285,7 @@ struct LAYER* layer_screen(int x, int y)
 /*鼠标图层*/
 struct LAYER* layer_mouse(int x,int y){
 	extern struct LAYERMAN *layman;
-	extern struct MEMMAN * memman;
-	unsigned char * mcursor = (unsigned char *)memman_alloc(memman,256);//是全局变量还是堆上变量 应该不影响
+	unsigned char * mcursor = (unsigned char *)memman_alloc(256);//是全局变量还是堆上变量 应该不影响
   //  extern unsigned char *mcursor;
 	struct LAYER * layerms;
 	layerms = layer_register(layman);
@@ -302,8 +302,7 @@ struct LAYER* layer_mouse(int x,int y){
 #define MINIFOCUS 0x3
 struct LAYER* layer_window(int posix,int posiy,int sizex,int sizey){
 	extern struct LAYERMAN *layman;
-	extern struct MEMMAN * memman;
-	unsigned char * window = (unsigned char *)memman_alloc_4k(memman,sizex*sizey);
+	unsigned char * window = (unsigned char *)memman_alloc_4k(sizex*sizey);
 	struct LAYER *layer;
 	layer = layer_register(layman);
 	layer->vx0 = posix;
@@ -351,8 +350,8 @@ struct LAYER* layer_window(int posix,int posiy,int sizex,int sizey){
 
 struct LAYER *layer_time(void){
 	extern struct LAYERMAN *layman;
-	extern struct MEMMAN * memman;
-	unsigned char * clockbg = (unsigned char *)memman_alloc_4k(memman,1024);//是全局变量还是堆上变量 应该不影响
+
+	unsigned char * clockbg = (unsigned char *)memman_alloc_4k(1024);//是全局变量还是堆上变量 应该不影响
     box_fill8(clockbg,64,MOON,0,0,63,15);
   //  extern unsigned char *mcursor;
 	struct LAYER * layer;

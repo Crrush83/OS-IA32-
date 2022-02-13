@@ -25,7 +25,7 @@ struct LAYERMAN *layman;
 /*
 memman alloc
 */
-struct LAYERMAN* layerman_init(struct MEMMAN *memman,struct BOOTINFO *binfo);
+struct LAYERMAN* layerman_init();
 struct LAYER *layer_register(struct LAYERMAN *layman);
 void layer_setbuf(struct LAYER *layer, unsigned char *buf, int xsize, int ysize, int col_inv);
 void layer_updown(struct LAYERMAN *layman, struct LAYER *layer, int height);

@@ -17,12 +17,12 @@ struct MEMMAN{
     struct FREEINFO free[MEMMAN_FREES];
 };//大小：32B + 4090*8B = 32752 约32KB
 void memman_init(struct MEMMAN *man);//内核堆应该是内核自己规划的吧
-unsigned int memman_total(struct MEMMAN *man);
-unsigned int memman_alloc(struct MEMMAN *man,unsigned int size);
-int memman_free(struct MEMMAN *man,unsigned int addr,unsigned int size);
+unsigned int memman_total();
+unsigned int memman_alloc(unsigned int size);
+int memman_free(unsigned int addr,unsigned int size);
 //size stands for bytes
-unsigned int memman_alloc_4k(struct MEMMAN *man,unsigned int size);
-unsigned int memman_free_4k(struct MEMMAN *man,unsigned int addr,unsigned int size);
+unsigned int memman_alloc_4k(unsigned int size);
+unsigned int memman_free_4k(unsigned int addr,unsigned int size);
 
 
 #endif

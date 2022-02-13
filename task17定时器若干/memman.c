@@ -85,18 +85,19 @@ unsigned int memtest_sub(unsigned int start, unsigned int end) {
   return size;
 }
 //初始化：还没有规划哪一块可用 所以内存可用总量为0 
-void memman_init(struct MEMMAN* man){
-    man->frees = 0;//free item num
-    man->maxfrees = 0;
-    man->lostsize = 0;
-    man->losts = 0;
+void memman_init(struct MEMMAN *memman){
+    memman->frees = 0;//free item num
+    memman->maxfrees = 0;
+    memman->lostsize = 0;
+    memman->losts = 0;
     return;
 }
 
-unsigned int memman_total(struct MEMMAN *man){
+unsigned int memman_total(){
+    struct MEMMAN *memman;
     unsigned int i,sum = 0;
-    for(i = 0;i < man->frees;i++){
-        sum+=man->free[i].size;
+    for(i = 0;i < memman->frees;i++){
+        sum+=memman->free[i].size;
     }
     return sum;
 }
@@ -104,37 +105,39 @@ unsigned int memman_total(struct MEMMAN *man){
 //use a chunk of memory
 //should recored 
 //renew where are usable
-unsigned int memman_alloc(struct MEMMAN *man,unsigned int size){
+unsigned int memman_alloc(unsigned int size){
+    extern struct MEMMAN *memman;
     int i;
-    for(i = 0;i < man->frees;i++){
-        if(man->free[i].size >= size){
+    for(i = 0;i < memman->frees;i++){
+        if(memman->free[i].size >= size){
             //find a chunk 最先发现模式
             break;
         }
     }   
-	 if(i == man->frees){
+	 if(i == memman->frees){
         return 0;
     }
-    int addr = man->free[i].addr;
+    int addr = memman->free[i].addr;
     
 
     
-    man->free[i].size -= size;
-    man->free[i].addr += size;
-    if(man->free[i].size == 0){
+    memman->free[i].size -= size;
+    memman->free[i].addr += size;
+    if(memman->free[i].size == 0){
         //delete this record item
-            man->frees--;
-        for(;i < man->frees;i++){
-        man->free[i] = man->free[i+1];}
+            memman->frees--;
+        for(;i < memman->frees;i++){
+        memman->free[i] = memman->free[i+1];}
     }
     return addr;
 }
 
-int memman_free(struct MEMMAN *man,unsigned int addr,unsigned int size){
+int memman_free(unsigned int addr,unsigned int size){
+    extern struct MEMMAN *memman;
     int i;
 	//frees项都是不重叠的 所以先找到一个比欲插入项大的
-    for(i = 0;i < man->frees;i++){
-        if(man->free[i].addr >= addr){
+    for(i = 0;i < memman->frees;i++){
+        if(memman->free[i].addr >= addr){
             break;
         }
     }
@@ -159,72 +162,72 @@ int memman_free(struct MEMMAN *man,unsigned int addr,unsigned int size){
         //free chunk can merge to item i-1
         //[lost]free chunk cant merge to item i-1 :new an item but!lost!
         int index;
-    if(i == 0 && addr+size == man->free[0].addr){
-        man->free[0].size += size;
+    if(i == 0 && addr+size == memman->free[0].addr){
+        memman->free[0].size += size;
         return 0;
     }
-    else if(i == 0 && addr+size != man->free[0].addr){
-        if(man->frees < MEMMAN_FREES){
+    else if(i == 0 && addr+size != memman->free[0].addr){
+        if(memman->frees < MEMMAN_FREES){
             //insert new item
-            man->frees++;
-            for(index = man->frees - 1;index > i;index--){
-                man->free[index] = man->free[index-1];
+            memman->frees++;
+            for(index = memman->frees - 1;index > i;index--){
+                memman->free[index] = memman->free[index-1];
             }
-            man->free[i].size = size;
-            man->free[i].addr = addr;
+            memman->free[i].size = size;
+            memman->free[i].addr = addr;
             return 0;
          }
         else{
             goto lost;
         }
     }
-    else if(0 < i && i < man->frees && man->free[i-1].addr + man->free[i-1].size == addr && man->free[i].addr == addr+size){
+    else if(0 < i && i < memman->frees && memman->free[i-1].addr + memman->free[i-1].size == addr && memman->free[i].addr == addr+size){
         //delete item  i
-        man->free[i-1].size += size;
-        man->free[i-1].size += man->free[i].size;
-        man->frees--;
-        for(index = i;index < man->frees;index++){
-            man->free[index] = man->free[index+1];
+        memman->free[i-1].size += size;
+        memman->free[i-1].size += memman->free[i].size;
+        memman->frees--;
+        for(index = i;index < memman->frees;index++){
+            memman->free[index] = memman->free[index+1];
         }
         return 0;
     }
-    else if(0 < i && i < man->frees && man->free[i-1].addr + man->free[i-1].size == addr && man->free[i].addr != addr+size){
+    else if(0 < i && i < memman->frees && memman->free[i-1].addr + memman->free[i-1].size == addr && memman->free[i].addr != addr+size){
         //merge to i-1
-        man->free[i-1].size += size;
+        memman->free[i-1].size += size;
         return 0;
     }
-    else if(0 < i && i < man->frees && man->free[i-1].addr + man->free[i-1].size != addr && man->free[i].addr == addr+size){
+    else if(0 < i && i < memman->frees && memman->free[i-1].addr + memman->free[i-1].size != addr && memman->free[i].addr == addr+size){
         //merge to i
-        man->free[i].addr -= size;
-        man->free[i].size += size;
+        memman->free[i].addr -= size;
+        memman->free[i].size += size;
         return 0;
     }
-    else if(0 < i && i < man->frees && man->free[i-1].addr + man->free[i-1].size != addr && man->free[i].addr != addr+size){
-        if(man->frees < MEMMAN_FREES){
+    else if(0 < i && i < memman->frees && memman->free[i-1].addr + memman->free[i-1].size != addr && memman->free[i].addr != addr+size){
+        if(memman->frees < MEMMAN_FREES){
             //insert new item
-            man->frees++;
-            for(index = man->frees - 1;index > i;index--){
-                man->free[index] = man->free[index-1];
+            memman->frees++;
+            for(index = memman->frees - 1;index > i;index--){
+                memman->free[index] = memman->free[index-1];
             }
-            man->free[index].size = size;
-            man->free[index].addr = addr;
+            memman->free[index].size = size;
+            memman->free[index].addr = addr;
             return 0;
         }
         else{
             goto lost;
         }
     }
-    else if(i == man->frees && man->free[i-1].addr+size == addr){
+    else if(i == memman->frees && memman->free[i-1].addr+size == addr){
             //merge to i-1
-            man->free[i-1].size += size;
+            memman->free[i-1].size += size;
             return 0;
     }
-    else if(i == man->frees && man->free[i-1].addr+size != addr){
-        if(man->frees < MEMMAN_FREES){
+    else if(i == memman->frees && memman->free[i-1].addr+size != addr){
+        if(memman->frees < MEMMAN_FREES){
             //insert new item
-            man->frees++;
-            man->free[i].addr = addr;
-            man->free[i].size = size;
+            memman->frees++;
+            memman->free[i].addr = addr;
+            memman->free[i].size = size;
             return 0;
         }
         else{
@@ -232,22 +235,22 @@ int memman_free(struct MEMMAN *man,unsigned int addr,unsigned int size){
         }
     }
     lost:
-        man->lostsize+=size;
-        man->losts++;
+        memman->lostsize+=size;
+        memman->losts++;
         return -1;
         
     return -1;
 }
 
 //size stands for bytes
-unsigned int memman_alloc_4k(struct MEMMAN *man,unsigned int size){
+unsigned int memman_alloc_4k(unsigned int size){
     unsigned int a;
     //divide 4k eqaul to & 
     size = (size + 0xfff) & 0xfffff000;//凡不是4k的整倍数的都要向上取整
-    a = memman_alloc(man,size);
+    a = memman_alloc(size);
     return a;
 }
-unsigned int memman_free_4k(struct MEMMAN *man,unsigned int addr,unsigned int size){
+unsigned int memman_free_4k(unsigned int addr,unsigned int size){
     size = (size + 0xfff) & 0xfffff000;
-    return memman_free(man,addr,size);
+    return memman_free(addr,size);
 }

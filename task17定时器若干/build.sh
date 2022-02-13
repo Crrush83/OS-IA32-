@@ -15,9 +15,11 @@ gcc  -Wall -m32 -g -c  -I ../include -I ../libc/include ../fifo.c -o fifo.bin
 gcc  -Wall -m32 -g -c  -I ../include -I ../libc/include ../keyboardmouse.c -o keyboardmouse.bin
 gcc  -Wall -m32 -g -c  -I ../include -I ../libc/include ../memman.c -o memman.bin
 gcc  -Wall -m32 -g -c  -I ../include -I ../libc/include ../layer.c -o layer.bin
+gcc  -Wall -m32 -g -c  -I ../include -I ../libc/include ../list.c -o list.bin
+
 ld -m elf_i386 --oformat binary \
 asmio.bin os.bin graphic.bin hankaku.bin asmtime.bin time.bin \
 asminterupt.bin  interupt.bin fifo.bin keyboardmouse.bin \
-memman.bin layer.bin stdio.bin -o sys.bin -T '../linkscript.ld'
+memman.bin layer.bin list.bin stdio.bin -o sys.bin -T '../linkscript.ld'
 #make img
 

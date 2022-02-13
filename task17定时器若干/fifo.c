@@ -4,6 +4,7 @@
 初始化一个缓冲区 接收缓冲区的指针 extern ... fifo 再传入&fifo初始化这样
 指定的大小应该和用于接收数据的buf大小一样
 */
+//来一套fifo32
 void fifo8_init(struct FIFO8 *fifo,int size,unsigned char *buf){
     fifo->buf = buf;
     fifo->size = size;
