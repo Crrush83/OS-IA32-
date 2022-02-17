@@ -224,10 +224,10 @@ void layers_refresh_v3(int h0, int vx0, int vy0, int vx1, int vy1)
 
 		for (by = by0; by <= by1; by++) {
 			vy = layer->vy0 + by;//实际在vram中的纵向坐标
-			if(vy >= 200){continue;}
+			if(vy<0 ||vy >= 200){continue;}
 			for (bx = bx0; bx <= bx1; bx++) {
 				vx = layer->vx0 + bx;
-				if(vx >= 320){continue;}
+				if(vx <0 ||vx >= 320){continue;}
 				c = buf[by * layer->bxsize + bx];//不要超过 16 * 16 -1 小心咯
 				if (c != layer->col_inv) {
 					vram[vy * layman->binfo->scrnx + vx] = c;
