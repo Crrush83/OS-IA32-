@@ -36,6 +36,7 @@ struct TIMERMAN * timerman_init(void){//
     t->dumbtail.prev = &(t->dumbhead);
     return t;
 }
+//有新的定时器插入时
 struct TIMER* new_timer(unsigned int timeout,unsigned int id){
      extern struct TIMERMAN *timerman;
      struct TIMER *timer = (struct TIMER *)memman_alloc(24);
@@ -48,11 +49,23 @@ struct TIMER* new_timer(unsigned int timeout,unsigned int id){
      //所以不是以node *的形式存储 而是以node本身 timer->node这样是node域的内容。。
      //传进timer->node 就是0
      //传进&(timer->node) 就是timer+16
+     io_cli();
+     //禁止时钟中断 
+     struct list_node *node = timerman->dumbhead.next;
+     struct TIMER *t;
+     //均未超nexttimeout
+     timerman->nexttimeout = timeout;
+     timerman->past = 0;//集体对齐时刻
+     for(;node!=&(timerman->dumbtail);node = node->next){
+        t = (struct TIMER *)container_of(node);
+        t->timeout -= timerman->past;
+        if(t->timeout < timeout){
+            timerman->nexttimeout = t->timeout;
+        }
+    }
      list_insert_inorderbyuint(&(timerman->dumbhead),&(timerman->dumbtail)
      ,&(timer->node),0);
-     if(timeout < timerman->nexttimeout){
-         timerman->nexttimeout = timeout;
-     }
+     io_sti();
      return timer;
  }
 void free_timer(struct TIMER* timer){
@@ -98,5 +111,6 @@ void updatetimer(void){
             timerman->past = 0;
             return;
         }
-    } 
+    }
+    //在计时器全部超时的时候 
 }

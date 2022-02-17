@@ -374,7 +374,7 @@ void putstr_on_layer(struct LAYER *layer, int x, int y, int c, int b, char *s,in
 	//刷字
 	putfont8_asc(layer->buf, layer->bxsize, x, y, c, s);
 	//为啥不刷？ 
-	layers_refresh_v3(layman,0,x+layer->vx0, y+layer->vy0, layer->vx0+x + strlen * 8 - 1, 
+	layers_refresh_v3(layman,layer->height,x+layer->vx0, y+layer->vy0, layer->vx0+x + strlen * 8 - 1, 
 	layer->vy0+y + 16 - 1);
 	//layers_refresh_v3(layman,0,20,20,200,100);
 	return;
@@ -385,7 +385,7 @@ void putcursor_on_layer(struct LAYER *layer, int x, int y, int c)
 	//刷背景
 	box_fill8(layer->buf, layer->bxsize, c, x, y, x + 7, y + 15);
 	//为啥不刷？ 
-	layers_refresh_v3(layman,0,x+layer->vx0, y+layer->vy0, layer->vx0+x + 7, layer->vy0+y + 15);
+	layers_refresh_v3(layman,layer->height,x+layer->vx0, y+layer->vy0, layer->vx0+x + 7, layer->vy0+y + 15);
 	return;
 }
 struct LAYER *layer_time(void){

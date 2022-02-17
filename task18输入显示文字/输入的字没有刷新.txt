@@ -2,3 +2,14 @@
 却只在鼠标划过的时候才刷新！
 putstr_on_layer的参数是相对窗口的
 在内部调用refresh要加上窗口位置
+中断只发生一次（后来的定时器没有生效）
+nexttimeout 
+将最新的没有超时的计时器的超时时间设置为下次更新：
+//在计时器全部超时的时候 没有设置
+相当于next time out -- 
+应该不影响啊？
+因为发现nexttimeout == 0直接返回（空情况）
+所以有新的timer插入空列表必须更新nexttimeout
+考虑timeout < nexttimeout 已经不够用！
+//有新的定时器插入时 必须对所有进行更新 重新计算past
+修好啦！是我疏忽了

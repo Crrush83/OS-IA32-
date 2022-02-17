@@ -34,7 +34,7 @@ void list_insert_inorderbyuint(struct list_node * head,struct list_node * end,st
         unsigned int nekey = *(unsigned int*)(keyp(container_of(ne),keyadd));
         if(nekey > insertkey) break;
     }
-    //node ne
+    //插在ne之前哈
     struct list_node *pre = ne->prev;
     pre->next = node;
     node->prev = pre;

@@ -133,11 +133,23 @@ int main(void){
             putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);
          }else if(fifo8_status(timerfifo) > 0){
              unsigned char tid = fifo8_get(timerfifo);
-             io_sti();
+              io_sti();
+
              if(tid == (unsigned char)'b' || tid == (unsigned char)'w'){
-              swap_cursor_color(tid);//为什么只处理了一次呢？
+              //swap_cursor_color(tid);//为什么只处理了一次呢？
+                if(tid == 'b'){//black cursor
+                new_timer(2,'w');
+                cursor_c = BLACK;        
+             }
+               if(tid == 'w'){
+               new_timer(2,'b');
+               cursor_c = WHITE;
+                sprintf(line,"timer id = %c timeout!",tid); 
+             debugPrint((unsigned char *)line); 
+             }      
               putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);
              }
+            
          }
        }else{
         io_sti();
