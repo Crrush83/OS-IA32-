@@ -13,6 +13,7 @@
 #define TIMERADDR 0x1010
 struct BOOTINFO *binfo;
 struct MEMMAN *memman;
+extern struct LAYERMAN *layman;
 struct INTERUPT_GATE_DESCRIPTOR *idt;
 int mousex = 0,mousey = 0;
 struct LAYER *timelayer;
@@ -58,7 +59,6 @@ int main(void){
     timerfifo = (struct FIFO8 *)memman_alloc(sizeof(struct FIFO8)); 
     fifo8_init(timerfifo,32,timerbuf);
   /*layer managment*/
-  extern struct LAYERMAN *layman; 
   layman = layerman_init(memman,binfo);
   layer_screen(320,200);
   cursor_x0 = 7;cursor_x = 0;cursor_y0 = 23;cursor_y = 0;cursor_c = BLACK;//文字框起始于4 20
@@ -109,7 +109,12 @@ int main(void){
           // sprintf(tmp,"x:%d y:%d",mdec.x,mdec.y);
           // debugPrint((unsigned char*)tmp);
           move_mouse(binfo,&mdec,&mousex,&mousey);
-          layer_slide(layman,mouselayer,mousex,mousey);
+          layer_slide(mouselayer,mousex,mousey);
+          //mouse slide是否暗含窗口的移动？
+          if(mdec.btn & 0x01){
+            //按下左键
+            layer_slide(winl,mousex-80,mousey - 8);
+          }
           }
         }
          else if(fifo8_status(keyfifo) > 0){
@@ -136,17 +141,7 @@ int main(void){
               io_sti();
 
              if(tid == (unsigned char)'b' || tid == (unsigned char)'w'){
-              //swap_cursor_color(tid);//为什么只处理了一次呢？
-                if(tid == 'b'){//black cursor
-                new_timer(2,'w');
-                cursor_c = BLACK;        
-             }
-               if(tid == 'w'){
-               new_timer(2,'b');
-               cursor_c = WHITE;
-                sprintf(line,"timer id = %c timeout!",tid); 
-             debugPrint((unsigned char *)line); 
-             }      
+              swap_cursor_color(tid);//为什么只处理了一次呢？    
               putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);
              }
             

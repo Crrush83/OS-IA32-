@@ -21,22 +21,22 @@ struct LAYERMAN
     struct LAYER layerset[MAX_LAYER_NUM];
     struct LAYER *ordered_layers[MAX_LAYER_NUM];
 };
-struct LAYERMAN *layman;
+
 /*
 memman alloc
 */
 struct LAYERMAN* layerman_init();
-struct LAYER *layer_register(struct LAYERMAN *layman);
+struct LAYER *layer_register();
 void layer_setbuf(struct LAYER *layer, unsigned char *buf, int xsize, int ysize, int col_inv);
-void layer_updown(struct LAYERMAN *layman, struct LAYER *layer, int height);
-void layers_refresh(struct LAYERMAN *layman);
-void layer_slide(struct LAYERMAN *layman, struct LAYER *layer, int vx0, int vy0);
-void layer_free(struct LAYERMAN *layman, struct LAYER *layer);
+void layer_updown(struct LAYER *layer, int height);
+void layers_refresh();
+void layer_slide(struct LAYER *layer, int vx0, int vy0);
+void layer_free(struct LAYER *layer);
 
 struct LAYER* layer_screen(int x, int y);
 struct LAYER* layer_mouse(int x,int y);
-void layers_refresh_v2(struct LAYERMAN *layman, int vx0, int vy0, int vx1, int vy1);
-void layers_refresh_v3(struct LAYERMAN *layman,int h0, int vx0, int vy0, int vx1, int vy1);
+void layers_refresh_v2( int vx0, int vy0, int vx1, int vy1);
+void layers_refresh_v3(int h0, int vx0, int vy0, int vx1, int vy1);
 struct LAYER* layer_window(int posix,int posiy,int sizex,int sizey);
 struct LAYER* layer_time(void);
 void make_textbox8(struct LAYER* layer, int x0, int y0, int x1, int y1, int c);

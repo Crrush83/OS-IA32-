@@ -2,6 +2,7 @@
 #include "memman.h"
 #include "graphic.h"
 #include <stdio.h>
+struct LAYERMAN *layman;
 struct LAYERMAN* layerman_init(){
 	//extern struct MEMMAN *memman;
 	extern struct BOOTINFO *binfo;
@@ -20,7 +21,7 @@ struct LAYERMAN* layerman_init(){
 		return layerman;
 }
 
-struct LAYER *layer_register(struct LAYERMAN *layman)
+struct LAYER *layer_register()
 {
 	struct LAYER *layer;
 	int i;
@@ -50,7 +51,7 @@ void layer_setbuf(struct LAYER *layer, unsigned char *buf, int xsize, int ysize,
 		   低->高 （低，高]向左移动
 
 */
-void layer_updown(struct LAYERMAN *layman, struct LAYER *layer, int height)
+void layer_updown(struct LAYER *layer, int height)
 {
 	int h, old = layer->height; 
 	if (height > layman->top + 1) {
@@ -83,7 +84,7 @@ void layer_updown(struct LAYERMAN *layman, struct LAYER *layer, int height)
 		}
 	//修改显示	
 	//溢出？
-	layers_refresh_v3(layman,0,layer->vx0,layer->vy0,layer->vx0 + layer->bxsize,layer->vy0+layer->bysize);
+	layers_refresh_v3(0,layer->vx0,layer->vy0,layer->vx0 + layer->bxsize,layer->vy0+layer->bysize);
 	} else if (old < height) {	
 		if (old >= 0) {
 //(old,height]左移
@@ -103,13 +104,13 @@ void layer_updown(struct LAYERMAN *layman, struct LAYER *layer, int height)
 			layman->ordered_layers[height] = layer;
 			layman->top++;
 		}
-		layers_refresh_v3(layman,height,layer->vx0,layer->vy0,layer->vx0 + layer->bxsize,layer->vy0+layer->bysize);
+		layers_refresh_v3(height,layer->vx0,layer->vy0,layer->vx0 + layer->bxsize,layer->vy0+layer->bysize);
 
 	}
 	return;
 }
 
-void layers_refresh(struct LAYERMAN *layman)
+void layers_refresh()
 {
 	int h, bx, by, vx, vy;
  	unsigned char *buf, c, *vram = layman->binfo->vram;
@@ -135,7 +136,7 @@ void layers_refresh(struct LAYERMAN *layman)
 //刷新区域、图层溢出
 //vx0:较小（靠左）的在vram中的水平向起点
 //bx:在buf中的水平向坐标
-void layers_refresh_v2(struct LAYERMAN *layman, int vx0, int vy0, int vx1, int vy1)
+void layers_refresh_v2( int vx0, int vy0, int vx1, int vy1)
 {
 	    //      char *tmp = "         ";
         //   sprintf(tmp,"x:%d y:%d",vx0,vy0);
@@ -190,7 +191,7 @@ void layers_refresh_v2(struct LAYERMAN *layman, int vx0, int vy0, int vx1, int v
 }
 
 
-void layers_refresh_v3(struct LAYERMAN *layman,int h0, int vx0, int vy0, int vx1, int vy1)
+void layers_refresh_v3(int h0, int vx0, int vy0, int vx1, int vy1)
 {
 	int h, bx, by, vx, vy;
 	unsigned char *buf, c, *vram = layman->binfo->vram;
@@ -237,18 +238,16 @@ void layers_refresh_v3(struct LAYERMAN *layman,int h0, int vx0, int vy0, int vx1
 	return;
 }
 
-void layer_slide(struct LAYERMAN *layman, struct LAYER *layer, int vx0, int vy0)
+void layer_slide( struct LAYER *layer, int vx0, int vy0)
 {
-	
-
 	if (layer->height >= 0) { 
 		//ab
 		int oldx = layer->vx0,oldy = layer->vy0;
 		layer->vx0 = vx0;
 	    layer->vy0 = vy0;
-        layers_refresh_v3(layman,0,oldx,oldy,
+        layers_refresh_v3(0,oldx,oldy,
 		oldx+layer->bxsize - 1,oldy+layer->bysize -1); 
-		layers_refresh_v3(layman,layer->height,vx0,vy0,
+		layers_refresh_v3(layer->height,vx0,vy0,
 		 vx0+ layer->bxsize-1,vy0+layer->bysize -1);
 	}else{
 	layer->vx0 = vx0;
@@ -258,10 +257,10 @@ void layer_slide(struct LAYERMAN *layman, struct LAYER *layer, int vx0, int vy0)
 }
 //高度-1 目的在ordered里空出位置
 //同时标记为未使用 在layserset里空出位置
-void layer_free(struct LAYERMAN *layman, struct LAYER *layer)
+void layer_free( struct LAYER *layer)
 {
 	if (layer->height >= 0) {
-		layer_updown(layman, layer, -1); 
+		layer_updown( layer, -1); 
 	}
 	layer->flags = 0; 
 	return;
@@ -270,20 +269,18 @@ void layer_free(struct LAYERMAN *layman, struct LAYER *layer)
 /*背景图层*/
 struct LAYER* layer_screen(int x, int y)
 {
-	extern struct LAYERMAN *layman;
 	//mem space 
 	unsigned char * bgbuf = (unsigned char * )memman_alloc_4k(x * y);
 	init_screen(bgbuf,x,y);
 	struct LAYER * layerbg;
 	layerbg = layer_register(layman);
 	layer_setbuf(layerbg,(unsigned char *)bgbuf,x,y,16);
-	layer_updown(layman,layerbg,0);
+	layer_updown(layerbg,0);
 	//默认 0，0 位置
 	return layerbg;
 }
 /*鼠标图层*/
 struct LAYER* layer_mouse(int x,int y){
-	extern struct LAYERMAN *layman;
 	unsigned char * mcursor = (unsigned char *)memman_alloc(256);//是全局变量还是堆上变量 应该不影响
   //  extern unsigned char *mcursor;
 	struct LAYER * layerms;
@@ -292,7 +289,7 @@ struct LAYER* layer_mouse(int x,int y){
 	layerms->vy0 = 0;
 	init_mouse_cursor8(mcursor,BABYBLUE);
 	layer_setbuf(layerms,(unsigned char *)mcursor,x,y,BABYBLUE);
-	layer_updown(layman,layerms,layman->top+1);//always max height
+	layer_updown(layerms,layman->top+1);//always max height
 	return layerms;
 }
 #define CLOSE 0x0
@@ -348,7 +345,7 @@ struct LAYER* layer_window(int posix,int posiy,int sizex,int sizey){
 	extern int cursor_x0,cursor_x,cursor_y0 ,cursor_y,cursor_c;//文字框起始于4 20
 	//putstr_on_layer(layer,cursor_x0+cursor_x,cursor_y0+cursor_y,BLACK,WHITE,"?",1);
 	//暂时无透明色
-	layer_updown(layman,layer,layman->top+1);
+	layer_updown(layer,layman->top+1);
 	return layer;
 }
 void make_textbox8(struct LAYER* layer, int x0, int y0, int x1, int y1, int c)
@@ -374,7 +371,7 @@ void putstr_on_layer(struct LAYER *layer, int x, int y, int c, int b, char *s,in
 	//刷字
 	putfont8_asc(layer->buf, layer->bxsize, x, y, c, s);
 	//为啥不刷？ 
-	layers_refresh_v3(layman,layer->height,x+layer->vx0, y+layer->vy0, layer->vx0+x + strlen * 8 - 1, 
+	layers_refresh_v3(layer->height,x+layer->vx0, y+layer->vy0, layer->vx0+x + strlen * 8 - 1, 
 	layer->vy0+y + 16 - 1);
 	//layers_refresh_v3(layman,0,20,20,200,100);
 	return;
@@ -385,7 +382,7 @@ void putcursor_on_layer(struct LAYER *layer, int x, int y, int c)
 	//刷背景
 	box_fill8(layer->buf, layer->bxsize, c, x, y, x + 7, y + 15);
 	//为啥不刷？ 
-	layers_refresh_v3(layman,layer->height,x+layer->vx0, y+layer->vy0, layer->vx0+x + 7, layer->vy0+y + 15);
+	layers_refresh_v3(layer->height,x+layer->vx0, y+layer->vy0, layer->vx0+x + 7, layer->vy0+y + 15);
 	return;
 }
 struct LAYER *layer_time(void){
@@ -398,6 +395,6 @@ struct LAYER *layer_time(void){
 	layer->vx0 = 247;
 	layer->vy0 = 181;
 	layer_setbuf(layer,(unsigned char *)clockbg,64,16,MOON);
-	layer_updown(layman,layer,layman->top+1);//always max height
+	layer_updown(layer,layman->top+1);//always max height
 	return layer;
 }

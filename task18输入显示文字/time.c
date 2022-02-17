@@ -13,12 +13,11 @@ void showtime(void){
     // sprintf(line,"%d",count);
     // debugPrint(line);
 	extern struct LAYER *timelayer;
-    extern struct LAYERMAN *layman;
     unsigned char *s = (unsigned char *)0xffc;
     //先刷背景再字体没错啊 怎么重影？
     box_fill8(timelayer->buf,64,MOON,0,0,63,15);
  	putfont8_asc(timelayer->buf,64,0,0, BLACK, s);
-    layers_refresh_v3(layman,0,timelayer->vx0,timelayer->vy0,
+    layers_refresh_v3(0,timelayer->vx0,timelayer->vy0,
     timelayer->vx0+63,timelayer->vy0+15);
 	return;
 }
