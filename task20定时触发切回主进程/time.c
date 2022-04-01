@@ -38,12 +38,12 @@ struct TIMERMAN * timerman_init(void){//
 }
 //有新的定时器插入时
 //fifo域也要填
-struct TIMER* new_timer(unsigned int timeout,unsigned int id){
+struct TIMER* new_timer(unsigned int timeout,unsigned int id,struct FIFO8 *bind_fifo){
      extern struct TIMERMAN *timerman;
      struct TIMER *timer = (struct TIMER *)memman_alloc(24);
      //这个node嵌入到timer里 在内存中相邻
      if(timeout < 1) timeout = 1;
-     timer->fifo = timerfifo;
+     timer->fifo = bind_fifo;
      timer->timeout = timeout;
      timer->id = id;
      timer->presize = 16;

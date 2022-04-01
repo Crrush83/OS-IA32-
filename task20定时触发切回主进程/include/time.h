@@ -23,7 +23,7 @@ void initRTC(void);
 void install_clock_int(void);
 void showtime(void);
 struct TIMERMAN * timerman_init(void);
-struct TIMER* new_timer(unsigned int timeout,unsigned int id);
+struct TIMER* new_timer(unsigned int timeout,unsigned int id,struct FIFO8 *bind_fifo);
 void free_timer(struct TIMER* timer);
 unsigned int sectimeout(struct TIMERMAN *timerman);
 void updatetimer(void);

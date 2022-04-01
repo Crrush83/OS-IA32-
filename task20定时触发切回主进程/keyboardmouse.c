@@ -7,6 +7,7 @@
 
 extern struct FIFO8 *keyfifo;
 extern struct FIFO8 *mousefifo;
+extern struct FIFO8 *timerfifo;
 
 #define PORT_KEYDAT 0x0060
 #define PORT_KEYSTA 0x0064
@@ -174,7 +175,7 @@ if (mdec->phase == 0) {
 
 	void swap_cursor_color(){
 		extern int cursor_c;//文字框起始于4 20
-		new_timer(CURSOR_COL_SWAP_GAP,'c');
+		new_timer(CURSOR_COL_SWAP_GAP,'c',timerfifo);
 		if(cursor_c == BLACK){
 		cursor_c = WHITE;
 		}else{
