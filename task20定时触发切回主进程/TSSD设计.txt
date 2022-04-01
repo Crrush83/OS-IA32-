@@ -1,0 +1,4 @@
+gdt : 0x7e00
+gdt[7]:(tssd_main)
+gdt[8]:tssd_b
+

@@ -1,0 +1,71 @@
+//切出正常 切回有误
+
+//
+未切回时发生：
+task_switch(exception after commit point): bad LDT segment 
+应该使用jmp [含有cs：ip的地址]  ip在低地址哦
+
+//将load_tr指定的任务描述符改为busy位为1报错：
+LTR: doesn't point to an available TSS descriptor!
+//
+Loads the source operand into the segment selector field of the task register. The source operand
+(a general-purpose register or a memory location) contains a segment selector that points to a
+task state segment (TSS). After the segment selector is loaded in the task register, the processor
+uses the segment selector to locate the segment descriptor for the TSS in the global descriptor
+table (GDT). It then loads the segment limit and base address for the TSS from the segment
+descriptor into the task register. The task pointed to by the task register is marked busy, but a
+switch to the task does not occur.
+//load暗示正在运行的 load之后才会改为busy
+
+//
+
+如果使用return之类的检查：检查gdt[8] gdtr+0x40 最后一个
+如果使用jmpfar 检查gdt[7] gdtr+0x38
+
+//tss[gdt[7]]
+寄存器应该正确设置 前置任务为0 空描述符
+//tss[gdt[8]]
+前置任务为前一个tss的selector 11 1000 = 0x38
+发现并没有设置好前置任务？？
+
+PreviousTaskLink被call/exception/interupt更新
+
+//qemu里连时间中断刷新钟表都没了 bochs里时钟正常
+
+//去掉函数封装 去掉跳回 仅仅切换至task0x40
+gate type 11 unsupported
+可是我明明写的type1001 是9啊？
+//现在qemu始终正常 而bochs显示unsupport 11而且没有时钟。。
+
+//taskb的栈段应该是28 全局读写
+//而原来task应该是18
+
+
+//写jmp far正确但是jmp错误？？
+传入任务号在[esp+4]
+高地址为段选择子低地址为偏移
+所以jmp far [esp]
+
+//可以会跳 问题出现在添加timer ->观察timer缓冲区上
+//为什么init timer后打不出来size和avalible?
+为什么在multi.c里打印timerfifo的参数错误？
+
+//size打印出来
+//-267370093
+原码：1000 1111 11101111 10111110 01101101
+反码：1111 0000 00010000 01000001 10010010
+补码：1111 0000 00010000 01000001 10010011
+问题是每次status都是-1？
+
+//available
+-267370092
+
+果然相减是-1
+
+//fifo并没有填充
+//？？？
+也许相差-1就是若干次运算后的结果？？
+
+//之前忘了在new_timer里关联全局缓冲区
+//但是到时函数和监控代码段都同时使用的全局缓冲区
+//在任务切换里 通过定时器获取全局缓冲区就失效了！！
