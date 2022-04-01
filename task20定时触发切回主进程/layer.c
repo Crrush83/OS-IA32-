@@ -3,6 +3,7 @@
 #include "graphic.h"
 #include <stdio.h>
 struct LAYERMAN *layman;
+struct LAYER* backgroundlayer;
 struct LAYERMAN* layerman_init(){
 	//extern struct MEMMAN *memman;
 	extern struct BOOTINFO *binfo;

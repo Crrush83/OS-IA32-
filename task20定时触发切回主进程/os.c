@@ -64,7 +64,8 @@ int main(void){
  // debugPrint(sth_abt_timerfifo);
   /*layer managment*/
   layman = layerman_init(memman,binfo);
-  layer_screen(320,200);
+  extern struct LAYER* backgroundlayer;
+  backgroundlayer = layer_screen(320,200);
   cursor_x0 = 7;cursor_x = 0;cursor_y0 = 23;cursor_y = 0;cursor_c = BLACK;//文字框起始于4 20
   struct LAYER *winl = layer_window(20,20,200,100);
   timelayer = layer_time();
@@ -75,7 +76,7 @@ int main(void){
   */
   timerman = timerman_init();
   //光标定时器 0.5s
-  new_timer(2,'w');//定时器提醒我我就换成白的
+  new_timer(CURSOR_COL_SWAP_GAP,'c');//定时器提醒我我就换成白的
 
   io_cli();
 	init_idt();
@@ -121,9 +122,7 @@ tss_b.ioMapBaseAddress = 0x40000000;
   load_tr(7*8);//tr里面是偏移值 只是改变 不switch //  111 000 会在切换走的时候保存现在的现场吗。。。
   //设置目前在主任务执行
   //load tr有什么前置要求？
-  task_switch(0x40);//跳转到tssb代表的任务 1000 000
-  //farjmp8();//跳转到tssb代表的任务 1000 000
-    
+  new_timer(TASK_SWITCH_SCLICE,'t');
   
  		for (;;) {
        io_cli();
@@ -167,11 +166,21 @@ tss_b.ioMapBaseAddress = 0x40000000;
          }else if(fifo8_status(timerfifo) > 0){
              unsigned char tid = fifo8_get(timerfifo);
              io_sti();
-             if(tid == (unsigned char)'b' || tid == (unsigned char)'w'){
-              swap_cursor_color(tid);//为什么只处理了一次呢？    
-              putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);
+
+            // char printtimer[20];
+            // sprintf(printtimer,"%c",tid);//只有c函数omg??
+            // debugPrint(printtimer);
+             
+             if(tid == (unsigned char)'t'){
+               //select a task then switch to it
+               task_switch(0x40);
+               new_timer(TASK_SWITCH_SCLICE,'t');
+              }else if(tid == (unsigned char)'c'){
+            //  swap_cursor_color();//为什么只处理了一次呢？    
+              putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);//
+             }else{
+               //td == 's'
              }
-            
          }
        }else{
         io_sti();

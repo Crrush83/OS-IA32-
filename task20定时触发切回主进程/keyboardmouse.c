@@ -172,14 +172,12 @@ if (mdec->phase == 0) {
 	};
 	//退格：14 回车：28
 
-	void swap_cursor_color(unsigned char tid){
+	void swap_cursor_color(){
 		extern int cursor_c;//文字框起始于4 20
-		   if(tid == 'b'){//black cursor
-                new_timer(2,'w');
-                cursor_c = BLACK;  
-             }
-          if(tid == 'w'){
-               new_timer(2,'b');
-               cursor_c = WHITE;
-             }      
+		new_timer(CURSOR_COL_SWAP_GAP,'c');
+		if(cursor_c == BLACK){
+		cursor_c = WHITE;
+		}else{
+			cursor_c = BLACK;
+		}    
 	}

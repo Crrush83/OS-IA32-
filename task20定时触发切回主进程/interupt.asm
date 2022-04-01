@@ -45,9 +45,6 @@ init8259A:
 
   int0x70:
       pushad
-      ;1.25ms
-      ;计数800则清零并readtime
-
       call readtime
      ; call showtime 中断直接不处理？怎么回事？鼠标哪里也是终端直接不接受？
       mov al,0x20

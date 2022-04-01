@@ -86,7 +86,13 @@ unsigned int sectimeout(struct TIMERMAN *timerman){
     struct TIMER *t = container_of((timerman->dumbhead).next);
     return t->timeout;
 }
+int clock = 0;
+//char clk[32];
 void updatetimer(void){
+    //每次周期中断调用
+    // sprintf(clk,"%d",clock++);
+    // debugPrint(clk);
+    clock++;
     extern struct TIMERMAN *timerman;
     struct list_node *node = timerman->dumbhead.next;
     struct TIMER * t;

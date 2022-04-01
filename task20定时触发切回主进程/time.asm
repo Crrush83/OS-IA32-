@@ -10,7 +10,7 @@ initRTC:
         or al,0x80                        
         out 0x70,al
         in al,0x71
-        or al,0x0c ;1.25ms  1秒就是800下 怎么跟500ms一更新一样？                   
+        or al,0x29 ;0x29在bochs里+每次打印 大概10秒3000次 3m一次中断                   
         out 0x71,al 
         ;允许周期性
          mov al,0x0b      ;寄存器选择                  ;RTC寄存器B

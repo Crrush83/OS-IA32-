@@ -1,5 +1,6 @@
 #include "io.h"
 #include "graphic.h"
+#define CURSOR_COL_SWAP_GAP 500
 void wait_KBC_sendready(void);
 void init_keyboard(void);
 void enable_mouse(void);
@@ -15,4 +16,4 @@ void init_mouse_decode(struct  MOUSE_DEC *mdec);
 int mouse_decode(struct MOUSE_DEC *mdec,unsigned char data);
 //一定要声明成unsigned
 void move_mouse(struct BOOTINFO *binfo,struct MOUSE_DEC *mdec, int *mousexp,int *mouseyp);
-void swap_cursor_color(unsigned char tid);
+void swap_cursor_color();

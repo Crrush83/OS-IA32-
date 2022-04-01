@@ -1,3 +1,5 @@
+#define TASK_SWITCH_SCLICE 20
+#define SHOW_STH_GAP 100
 struct TSS32
 {
     int previousTaskLink;
