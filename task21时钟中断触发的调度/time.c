@@ -66,7 +66,7 @@ struct TIMER* new_timer(unsigned int timeout,unsigned int id,struct FIFO8 *bind_
 
      for(node = timerman->dumbhead.next;node!=&(timerman->dumbtail);node = node->next){
         t = (struct TIMER *)container_of(node);
-        if(t->timeout < timerman->nexttimeout){//以前是写的  timeout
+        if(t->timeout < timerman->nexttimeout){//以前是写的  timeout 都行
             timerman->nexttimeout = t->timeout;
             break;
         }else{
@@ -103,14 +103,12 @@ struct TIMER *task_switch_timer;
 //when find a timeout-timer, check if it is the task_switch_timer
 //ts_flag = true
 //when all the update done, switch task!(in the new task may set allow-interupt = true)
-void updatetimer(void){
-    //每次周期中断调用
-     char clk[32];//奇怪？10s 1800左右
-    // //应该是三千多 有没有另一半时间在taskb里？
-      sprintf(clk,"%d",clock++);
-      debugPrint(clk);  
+void updatetimer(void){  
+    // clock++;
+    // char clk;
+    // sprintf(clk,"%d",clock);
+    // debugPrint(clk);
     int ts_flag = 0;
-
     extern struct TIMERMAN *timerman;
     struct list_node *node;
     struct TIMER * t;
@@ -134,8 +132,6 @@ void updatetimer(void){
             if(t->id == (unsigned char)'t'){
                // debugPrint("task_switch timeout");//
                 ts_flag++;
-            }else if(t->id == (unsigned char)'s'){
-                debugPrint("timer s");
             }else{
             fifo8_put(t->fifo,t->id);//利用全局定时器通知缓冲区通知到时事件
             }
@@ -154,9 +150,11 @@ void updatetimer(void){
         timerman->nexttimeout = 0;
         timerman->past = 0;
     }
-
+    extern int task_switch_flag;
     if(ts_flag > 0){
-        task_switch();//中断已经完成可以切换。。
+        task_switch_flag = 1;
+    }else{
+        task_switch_flag = 0;
     }
     //在计时器全部超时的时候 
 }

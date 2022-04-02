@@ -22,7 +22,7 @@ VRAM    EQU   0x0ff8      ; 图像缓冲区的起始位置
   GLOBAL load_cr0,store_cr0
   GLOBAL write_mem8,write_mem32
   GLOBAL memtest_sub_asm
-  GLOBAL load_tr,schedule,farjmp8
+  GLOBAL load_tr,schedule,get_tr
 
 
 
@@ -151,5 +151,9 @@ load_tr:
   RET
 
 schedule: ;(offset,cs)
-  jmp far [esp+4] 
+  jmp far [esp+4] ;jmmp还是jmp far
+  RET  
+
+get_tr:
+  STR eax
   RET

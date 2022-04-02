@@ -45,3 +45,19 @@ interrupt(): gate descriptor is not valid sys seg (vector=0x08)
 不能使状态字PSW得以恢复，所以不能使断点完全恢复，对原程序的继续执行造成不良影响。
 
 把cli sti都去掉还是不可触发中断。。想死
+
+将段选择子由变量换回二进制
+未到50就切换Omg??
+jump_protected: gate type 11 unsupported
+
+
+在qemu里却无事发生？？
+
+//时钟中断EOI和任务切换对调？？嗯嗯可以用一个全局变量考虑是否切换 然后单独用一个函数哈。。
+
+看到back了 为什么gate type 11 unsupported
+
+//使用STR读取当前任务寄存器
+
+没问题 就qemu里太卡了
+bochs无解 短时间间隔用qemu算了。。

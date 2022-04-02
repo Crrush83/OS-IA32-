@@ -37,7 +37,7 @@ int main(void){
   memman_init(memman);
   int memsize = memtest(0x130000, 0x212ffff)/(1024*1024);//2000000B = 0x20MB = 32MB//怎么输出得48
   sprintf(line,"%d MB",memsize); 
-  debugPrint((unsigned char *)line);
+ // debugPrint((unsigned char *)line);
     //向memman注册32MB
   memman_free(0x130000,1024*1024*32);
   /*fifo*/
@@ -95,6 +95,7 @@ tss_a.ioMapBaseAddress = 0x40000000;
 //set_current_tss(&tss_a);
 tss_b.ldtSegmentSelector = 0;
 tss_b.ioMapBaseAddress = 0x40000000;
+  //tss_b.ss0 = 0x30;
   tss_b.eip = (int) & task_b_main;
   tss_b.eflags = 0x00000202;
   tss_b.eax = 0;
@@ -121,17 +122,14 @@ tss_b.ioMapBaseAddress = 0x40000000;
   load_tr(7*8);//tr里面是偏移值 只是改变 不switch //  111 000 会在切换走的时候保存现在的现场吗。。。
   //安装调度器
   extern int current_task;
-  extern struct TIMER *task_switch_timer;
-  current_task = 0x38;
-  task_switch_timer = new_timer(TASK_SWITCH_SCLICE,'t',NULL); 
-   //光标定时器 0.5s
-  new_timer(CURSOR_COL_SWAP_GAP,'c',timerfifo);
+  current_task = 0x38; 
   io_sti();//开放中断的时刻可能出现任务切换！即定时器触发的
+  new_timer(TASK_SWITCH_SCLICE,'t',NULL); 
+  new_timer(CURSOR_COL_SWAP_GAP,'c',timerfifo);
   //系统挂钟开始运行！S
   int mycount = 0;
-  char scount[32];
+ // char scount[32];
  		for (;;) {
-
        mycount++;
        io_cli();
        if(fifo8_status(keyfifo) + fifo8_status(mousefifo) + fifo8_status(timerfifo) > 0){
@@ -174,16 +172,12 @@ tss_b.ioMapBaseAddress = 0x40000000;
          }else if(fifo8_status(timerfifo) > 0){
              unsigned char tid = fifo8_get(timerfifo);
              io_sti();
-
-            // char printtimer[20];
-            // sprintf(printtimer,"%c",tid);//只有c函数omg??
-            // debugPrint(printtimer);
-             
              if(tid == (unsigned char)'c'){
-              swap_cursor_color();//为什么只处理了一次呢？    
+              swap_cursor_color();//为什么只处理了一次呢？ 
+              char scount[32];   
               putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);//
-             // sprintf(scount,"task main : %d",mycount);
-             // putstr_on_layer(backgroundlayer,160,144, MANGO, BABYBLUE,scount,32);
+              sprintf(scount,"task main : %d",mycount);
+              putstr_on_layer(backgroundlayer,160,144, MANGO, BABYBLUE,scount,32);
              }else{
                //td == 's'
              }

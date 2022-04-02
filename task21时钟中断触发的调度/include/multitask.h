@@ -1,5 +1,7 @@
-#define TASK_SWITCH_SCLICE 50
-#define SHOW_STH_GAP 100
+//for qemu
+#define TASK_SWITCH_SCLICE 2
+#define SHOW_STH_GAP 5
+#define CURSOR_COL_SWAP_GAP 3
 struct TSS32
 {
     int previousTaskLink;
@@ -46,3 +48,4 @@ void load_tr(int offset);
 void task_b_main(void);
 void schedule(int eip,int cs);
 void task_switch(void);
+int get_tr(void);

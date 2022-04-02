@@ -4,6 +4,7 @@
 #include "graphic.h"
 #include <stdio.h>
 #include "time.h"
+#include "multitask.h"
 
 extern struct FIFO8 *keyfifo;
 extern struct FIFO8 *mousefifo;
