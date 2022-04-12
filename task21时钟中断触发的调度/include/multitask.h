@@ -1,7 +1,7 @@
 //for qemu
-#define TASK_SWITCH_SCLICE 2
-#define SHOW_STH_GAP 5
-#define CURSOR_COL_SWAP_GAP 3
+#define TASK_SWITCH_SCLICE 20
+#define SHOW_STH_GAP 50
+#define CURSOR_COL_SWAP_GAP 20
 struct TSS32
 {
     int previousTaskLink;

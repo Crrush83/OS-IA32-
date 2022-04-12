@@ -156,5 +156,6 @@ void updatetimer(void){
     }else{
         task_switch_flag = 0;
     }
+    task_switch();
     //在计时器全部超时的时候 
 }

@@ -130,6 +130,7 @@ tss_b.ioMapBaseAddress = 0x40000000;
   int mycount = 0;
  // char scount[32];
  		for (;;) {
+       sendEOI();
        mycount++;
        io_cli();
        if(fifo8_status(keyfifo) + fifo8_status(mousefifo) + fifo8_status(timerfifo) > 0){
@@ -176,8 +177,6 @@ tss_b.ioMapBaseAddress = 0x40000000;
               swap_cursor_color();//为什么只处理了一次呢？ 
               char scount[32];   
               putcursor_on_layer(winl,cursor_x0+cursor_x,cursor_y0+cursor_y,cursor_c);//
-              sprintf(scount,"task main : %d",mycount);
-              putstr_on_layer(backgroundlayer,160,144, MANGO, BABYBLUE,scount,32);
              }else{
                //td == 's'
              }

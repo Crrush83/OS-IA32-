@@ -3,6 +3,7 @@ GLOBAL init8259A,int0x70,int0x21,int0x74
 GLOBAL load_idtr,exception,dealerrorcode
 EXTERN showtime,readtime,exceptionprint
 EXTERN savekbdata,savemousedata,task_switch
+GLOBAL sendEOI
 
 [SECTION .TEXT]
 
@@ -47,12 +48,13 @@ init8259A:
   ;时钟周期+周期结束中断
       pushad
       call readtime
+      call task_switch
       mov al,0x20
       out 0xa0,al
-      out 0x20,al
-      call task_switch
+      out 0x20,al 
       popad
       IRETD ;原来的cs和ip保存下来了吗？
+ 
  int0x74: ;鼠标中断
       pushad
       call savemousedata
@@ -85,4 +87,10 @@ init8259A:
 
 dealerrorcode:
       pop eax
-      IRETD    
+      IRETD   
+
+sendEOI:
+      mov al,0x20
+      out 0xa0,al
+      out 0x20,al 
+      ret

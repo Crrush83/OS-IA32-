@@ -37,22 +37,23 @@ void task_b_main(void)
     extern struct LAYER* backgroundlayer;
     for (;;)
     {
+        sendEOI();//well done!!!太漂亮了！！！
         mycount++;
         char s[100];
         io_cli();
         if (fifo8_status(&local_fifo) == 0)
         { 
-            io_sti();//只调用它会卡住吗？
+           io_sti();//只调用它会卡住吗？
         }
         else
         {
-            timer_id = fifo8_get(&local_fifo); 
+          timer_id = fifo8_get(&local_fifo); 
             io_sti();
             if(timer_id == (unsigned char)'s'){ //有可能在切出去的时候错失这个定时器不过没关系
                 sprintf(scount,"taskb show timer : %d",mycount);
                 putstr_on_layer(backgroundlayer,0,144, MANGO, BABYBLUE,scount,32);
                 new_timer(SHOW_STH_GAP,(unsigned char)'s',&local_fifo);//再次插入后中断就死翘翘？？
-            }
+           }
         }
           io_hlt();
     }

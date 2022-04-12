@@ -13,4 +13,6 @@ void store_cr0(int cr0);
 void write_mem8(int addr, int data);
 void write_mem32(int addr, int data);
 
+void sendEOI();
+
 #endif
