@@ -88,7 +88,7 @@ struct TASK *task_init()
 	task_timer = new_timer(TASK_SWITCH_SCLICE,'t',NULL);
 	return task;
 }
-
+/*找到第一个flags为0的任务 分配之 返回后填写属性 再加入到就绪队列中*/
 struct TASK *task_alloc(void)
 {
 	int i;
@@ -116,7 +116,7 @@ struct TASK *task_alloc(void)
 	}
 	return 0; 
 }
-
+/*仅仅意味着加入到就绪队列中 不代表切换哦*/
 void task_run(struct TASK *task)
 {
 	task->flags = 2; 
@@ -127,7 +127,6 @@ void task_run(struct TASK *task)
 
 void task_switch(void)
 {
-
     new_timer(TASK_SWITCH_SCLICE,'t',NULL);
 	if (taskctl->running >= 2) {
 		taskctl->now++;
@@ -138,7 +137,7 @@ void task_switch(void)
 	}
 	return;
 }
-
+/*把自己从就绪队列中拿出来*/
 void task_sleep(struct TASK *task)
 {
 	int i;
