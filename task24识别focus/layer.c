@@ -32,8 +32,8 @@ struct LAYERMAN* layerman_init(){
 	/*focus init*/
 	extern struct LAYER* focus_layer;
 	extern struct TASK* focus_task;
-	focus_layer = (struct LAYER*)-1;
-	focus_task = (struct TASK*)-1;
+	focus_layer = (struct LAYER*)NULL;
+	focus_task = (struct TASK*)NULL;
 	err:
 		return layerman;
 }
@@ -47,7 +47,7 @@ struct LAYER *layer_register()
 			layer = &(layman->layerset[i]);
 			layer->flags = LAYER_USE; 
 			layer->height = -1;
-			layer->task = 0;//还没有绑定任务！ 
+			layer->task = NULL;//还没有绑定任务！ 
 			return layer;
 		}
 	}
@@ -297,6 +297,7 @@ struct LAYER* layer_screen(int x, int y)
 	init_screen(bgbuf,x,y);
 	struct LAYER * layerbg;
 	layerbg = layer_register(layman);
+	layerbg->task = NULL;//任何一个进程都处理鼠标吗？ 没必要
 	layer_setbuf(layerbg,(unsigned char *)bgbuf,x,y,16);
 	layer_updown(layerbg,0);
 	//默认 0，0 位置
@@ -319,6 +320,82 @@ struct LAYER* layer_mouse(int x,int y){
 #define CLOSEFOCUS 0x1
 #define MINI 0x2
 #define MINIFOCUS 0x3
+//画窗口样式 同时将title写入layer结构
+void draw_window(unsigned char *buf, int xsize, int ysize, char *title, char act)
+{
+	static char closebtn[14][16] = {
+		"OOOOOOOOOOOOOOO@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQQQ@@QQQQQ$@",
+		"OQQQQQ@@@@QQQQ$@",
+		"OQQQQ@@QQ@@QQQ$@",
+		"OQQQ@@QQQQ@@QQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"OQQQQQQQQQQQQQ$@",
+		"O$$$$$$$$$$$$$$@",
+		"@@@@@@@@@@@@@@@@"
+	};
+	int x, y;
+	//窗体底色
+	box_fill8(buf, xsize,MOON, 0,0, xsize - 1, ysize - 1);
+	//title_bind -> draw window -> draw title
+	draw_window_title(buf,xsize,title,act);
+	//绘制按钮
+	char c;
+	for (y = 0; y < 14; y++) {
+		for (x = 0; x < 16; x++) {
+			c = closebtn[y][x];
+			if (c == '@') {
+				c = ROSE;
+			} else if (c == '$') {
+				c = PINK;
+			} else if (c == 'Q') {
+				c = PINK;
+			} else {
+				c = PINK;
+			}
+			buf[(5 + y) * xsize + (xsize - 21 + x)] = c;
+		}
+	}
+	return;
+}
+void draw_window_title(unsigned char *buf,int xsize,char *title, char act){
+	char tc, tbc;
+	if (act != 0) {
+		tc = MOON;
+		tbc = MOUSE;
+	} else {
+		tc = MOUSE;
+		tbc = MOON;
+	}
+	//窗口标题背景颜色
+	box_fill8(buf, xsize, tbc,4,4,xsize-6,18);
+	//窗口标题颜色
+	putfont8_asc(buf, xsize, 16,5, tc, title);
+}
+void layer_settitle(struct LAYER *layer,unsigned char *title){
+	//挂标题独立一个函数 比较漂亮。
+	//嵌入标题属性
+	int wp = 0;
+	for(;wp < 29;wp++){
+		if(title[wp]!='\0'){
+		layer->title[wp] = title[wp];
+		}else{
+		layer->title[wp] = title[wp];
+		break;
+		}
+	}
+	layer->title[29] = '\0';
+}
+//绘制一个窗口
+//规定大小：114*52
+//layer
+//因为layer必须关联task 所以这个过程暂时不用了
+//拆分为申请图层+申请buf区域+绑定Buf+在Buf上绘制窗口+给定窗口图层绘制标题+和task互相绑定
 struct LAYER* layer_window(int posix,int posiy,int sizex,int sizey){
 	extern struct LAYERMAN *layman;
 	unsigned char * window = (unsigned char *)memman_alloc_4k(sizex*sizey);
@@ -326,48 +403,9 @@ struct LAYER* layer_window(int posix,int posiy,int sizex,int sizey){
 	layer = layer_register(layman);
 	layer->vx0 = posix;
 	layer->vy0 = posiy;
-	int close_icon_x,close_icon_y,mini_icon_x,mini_icon_y;
-	int closex0 = sizex - 16,minix0 = sizex - 32;
-	//up
-	//left
-	//down
-	//right
-	box_fill8(window,sizex,MOON,1,1,sizex - 2,sizey - 2);
-	unsigned char close[224],mini[224];
-	init_icon(close,1);
-	init_icon(mini,3);
-	for(mini_icon_y = 0;mini_icon_y < 14;mini_icon_y++){
-		for(mini_icon_x = 0;mini_icon_x < 16;mini_icon_x++)
-		{
-			window[mini_icon_y * sizex + (minix0) + mini_icon_x] = mini[mini_icon_y*16 + mini_icon_x];
-		}
-		
-	}
-	for(close_icon_y = 0;close_icon_y < 14;close_icon_y++){
-		for(close_icon_x = 0;close_icon_x < 16;close_icon_x++){
-			window[close_icon_y * sizex + closex0 + close_icon_x] = 
-			close[close_icon_y * 16 + close_icon_x];
-		}
-	}
-	
-	/*
-	压边
-	void box_fill8(unsigned char *vram, int xsize, unsigned char c, int x0, int y0,
-               int x1, int y1) 
-	*/
-
-	box_fill8(window,sizex,WHITE,0,0,sizex-1,0);
-	box_fill8(window,sizex,WHITE,0,0,0,sizey - 1);
-	box_fill8(window,sizex,MOUSE,1,sizey - 1,sizex - 1,sizey - 1);
-	box_fill8(window,sizex,MOUSE,sizex - 1,0,sizex - 1,sizey - 1);
-	//临时变量 而window的内容保存在堆上
-	//putfont8_asc(window,sizex,30,30,LAVENDER,"uuu wheres ut");
+	draw_window(window,sizex,sizey,"window",1);
 	layer_setbuf(layer,window,sizex,sizey,-1);
-	//先setbuf才能填充
 	make_textbox8(layer,4,20,sizex - 5,sizey - 4,WHITE);
-	//extern int cursor_x0,cursor_x,cursor_y0 ,cursor_y,cursor_c;//文字框起始于4 20
-	//putstr_on_layer(layer,cursor_x0+cursor_x,cursor_y0+cursor_y,BLACK,WHITE,"?",1);
-	//暂时无透明色
 	layer_updown(layer,layman->top+1);
 	return layer;
 }

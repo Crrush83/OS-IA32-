@@ -14,6 +14,7 @@ struct LAYER{
     int bxsize,bysize,vx0,vy0;//b-block v - vram
     int col_inv,height,flags;//
     struct TASK* task; 
+    char title[20];//title最大长度
 };
 /*size:4+4+256*32 + 256*4  = 8KB+1KB+8B*/ //memman需要手动分配 有了memman之后利用其就可！
 struct LAYERMAN
@@ -44,4 +45,7 @@ struct LAYER* layer_time(void);
 void make_textbox8(struct LAYER* layer, int x0, int y0, int x1, int y1, int c);
 void putstr_on_layer(struct LAYER *layer, int x, int y, int c, int b, char *s,int strlen);
 void putcursor_on_layer(struct LAYER *layer, int x, int y, int c);
+void draw_window(unsigned char *buf, int xsize, int ysize, char *title, char act);
+void draw_window_title(unsigned char *buf,int xsize,char *title, char act);
+void layer_settitle(struct LAYER *layer,unsigned char *title);
 #endif

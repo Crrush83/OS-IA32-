@@ -46,15 +46,10 @@ struct TaskGateDescriptor
     int TSSSegmentSelector;//高16位
     int type_dpl_p;
 };
-void set_TSSDescriptor(struct TSSDescriptor *tssd, int limit, int base, int ar);
-void load_tr(int offset);
-void task_b_main(void);
-void schedule(int eip,int cs);
-void task_switch(void);
-int get_tr(void);
+
 
 /*task controller*/
-#define AR_TSS32    0x89
+#define AR_TSS32    0x89 //非busy
 #define MAX_TASKS		1000	/* 最多的任务数量 */
 #define TASK_GDT0		7		/* 从gdt的第几项开始是TSSD */
 
@@ -71,6 +66,14 @@ struct TASKCTL {
 	struct TASK *tasks[MAX_TASKS]; //就绪队列
 	struct TASK tasks0[MAX_TASKS]; //注册表
 };
+
+void set_TSSDescriptor(struct TSSDescriptor *tssd, int limit, int base, int ar);
+void load_tr(int offset);
+void task_b_main(struct TASK *thistask);
+void schedule(int eip,int cs);
+void task_switch(void);
+int get_tr(void);
+
 extern struct TIMER *task_timer;
 /*初始化任务管理机制 并为当前任务（交互循环）注册为0号任务 并返回地址*/
 struct TASK *task_init();

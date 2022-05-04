@@ -105,9 +105,9 @@ int clock = 0;
 //when all the update done, switch task!(in the new task may set allow-interupt = true)
 void updatetimer(void){  
     // clock++;
-    // char clk;
-    // sprintf(clk,"%d",clock);
-    // debugPrint(clk);
+     char clk[4];
+     sprintf(clk,"%d",clock++);
+     debugPrint(clk);
     int ts_flag = 0;
     extern struct TIMERMAN *timerman;
     struct list_node *node;

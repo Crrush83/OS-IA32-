@@ -23,6 +23,7 @@ VRAM    EQU   0x0ff8      ; 图像缓冲区的起始位置
   GLOBAL write_mem8,write_mem32
   GLOBAL memtest_sub_asm
   GLOBAL load_tr,schedule,get_tr
+  EXTERN sendEOI
 
 
 
@@ -151,6 +152,8 @@ load_tr:
   RET
 
 schedule: ;(offset,cs)
+  ;在这里send eio不好吗。。。
+  ;call sendEOI
   jmp far [esp+4] ;jmmp还是jmp far
   RET  
 

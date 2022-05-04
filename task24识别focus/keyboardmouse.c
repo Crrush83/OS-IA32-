@@ -77,8 +77,9 @@ void savekbdata(void)
 	int data;
 	data = io_in8(0x60);
 	extern struct TASK* focus_task;
-	if(focus_task >=0 && focus_task->keyfifo != 0){
-	fifo32_put(keyfifo, data);}
+	if(focus_task!=NULL && focus_task->keyfifo!=NULL){
+		fifo32_put(focus_task->keyfifo, data);
+	}
 
 	// char p[20];
 	// sprintf(p, "%d", data);

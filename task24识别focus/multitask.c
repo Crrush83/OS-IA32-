@@ -26,9 +26,11 @@ void set_TSSDescriptor(struct TSSDescriptor *tssd, int limit, int base, int ar)
     tssd->base_hi = (base & 0xff000000) >> 24;
     return;
 }
-void task_b_main(void)
+void task_b_main(struct TASK *thistask)
 {
-    sendEOI();
+	//内容++ esp--
+	//那么放了一个参数的函数 esp的
+   // sendEOI();//EOI为什么只需要一次呢？
     struct FIFO32 local_fifo; //全局 从生成的timer中获取
     int buf[32];
     fifo32_init(&local_fifo,32,buf);
@@ -39,8 +41,10 @@ void task_b_main(void)
     char scount[32];
     extern struct LAYER* backgroundlayer;
 
+	//想在刚切回来的时候发送EOI 但是切出去的时机无法预测？
     for (;;)
     {
+		sendEOI();
         mycount++;
         char s[100];
         io_cli();
@@ -53,8 +57,9 @@ void task_b_main(void)
           timer_id = fifo32_get(&local_fifo); 
             io_sti();
             if(timer_id == (unsigned char)'s'){ //有可能在切出去的时候错失这个定时器不过没关系
-                sprintf(scount,"taskb show timer : %d",mycount);
-                putstr_on_layer(backgroundlayer,0,144, MANGO, BABYBLUE,scount,32);
+                sprintf(scount,"%d",mycount);
+                putstr_on_layer(thistask->bind_layer,24,
+				20, MANGO, MOON,scount,32);
                 new_timer(SHOW_STH_GAP,(unsigned char)'s',&local_fifo);//再次插入后中断就死翘翘？？
            }
         }
@@ -93,9 +98,11 @@ struct TASK *task_alloc(void)
 {
 	int i;
 	struct TASK *task;
+	
 	for (i = 0; i < MAX_TASKS; i++) {
 		if (taskctl->tasks0[i].flags == 0) {
 			task = &taskctl->tasks0[i];
+			task->keyfifo = NULL;//
 			task->flags = 1; /*就绪状态*/
 		//	task->tss.eflags = 0x00000202; /* IF = 1; */
 			task->tss.eax = 0; 

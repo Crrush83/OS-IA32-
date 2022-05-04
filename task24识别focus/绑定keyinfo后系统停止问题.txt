@@ -1,0 +1,19 @@
+EOI位于schedule之前
+只有taska时（不休眠）
+在时钟中断里打计时观察 200以内时钟中断仍然没问题 闪烁正常（taska和定时器和中断都正常） taskb正常 
+200多以后taska闪烁不再
+
+有taskA和taskB时
+时钟22时（去掉更新周期没有算计时约20）
+显示jump_protected: gate type 11 unsupported
+
+
+
+在三个taskb开定期eoi 在taskA不开 显示taskb不再运行
+
+在三个taskb开定期eoi 在taskA也开 为什么taskA不再运行？
+
+还是bochs里 关掉A的休眠 四个任务运行得非常良好 但一段时间后就不行了
+
+而且几个任务是逐步停下来的！！！
+为什么去除所有重复EOI就好了呢？还是会在运行一段时间后停下来
