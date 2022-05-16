@@ -1,0 +1,13 @@
+需要创建task  需要创建layer-命名为window （可选）需要创建fifo
+task_alloc	  layer_register			fifo_init (malloc)
+task没有name  layer内部的buf需要malloc
+name作为绘制  
+内容保存到
+显存副本
+
+bind fifo
+bind layer
+run
+
+
+//为什么点击backgroud聚焦到task地址为0？那说明没有绑定 任务 ！那么应该取消旧的task聚焦就是说。。
